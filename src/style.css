@@ -1,0 +1,14 @@
+:root {
+  --el-color-primary: #ff5d23;
+}
+
+body {
+  margin: 0;
+  background-color: #f6f7fa;
+}
+
+#app {
+  position: relative;
+  z-index: 0;
+}
+
