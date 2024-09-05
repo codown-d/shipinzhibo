@@ -239,7 +239,14 @@ import { getRoomKey, getMessageKey } from "@/api/room";
 import { useRoute } from "vue-router";
 import { JcLive } from "@/utils/live";
 import { useAppStoreHook } from "@/store/modules/app";
-import { ref, onMounted, onUpdated, watch, onBeforeUnmount } from "vue";
+import {
+  ref,
+  onMounted,
+  onUpdated,
+  watch,
+  onBeforeUnmount,
+  shallowRef,
+} from "vue";
 import router from "@/router";
 import { getToken } from "@/utils/auth"; //获取token
 import sendSvg from "@/assets/images/send.svg";
@@ -289,14 +296,22 @@ const handleChange = (checked) => {
 //模拟弹幕接口 正常是一个websocket链接 或者一个setInterval 的定时http请求
 const getCurtainBomb = () => {
   setInterval(() => {
-    console.log(art.value.danmuku)
-      if (art.value && art.value.danmuku) {
-        art.value.danmuku.add({
-          text: "New Danmuku!",
-          time: 5, // Time in seconds when the danmuku will appear
-        });
-      }
-  }, 2000);
+    console.log(art.value);
+    if (art.value) {
+      art.value.plugins.artplayerPluginDanmuku.emit({
+        text: "661236", // 文本
+        time: 5, // 所在时间单位秒，默认取播放器当前时间
+        color: "#fff", // 颜色
+        size: 25, // 尺寸
+        border: false, // 是否有描边
+        // mode: 0, // 模式: 滚动 0 或者静止 1
+      });
+      // art.value.danmuku.add({
+      //   text: "New Danmuku!",
+      //   time: 5, // Time in seconds when the danmuku will appear
+      // });
+    }
+  }, 5000);
 };
 
 getCurtainBomb();
@@ -402,6 +417,16 @@ const getSbmitmessage = () => {
   getMessageKey(param, needToken).then((res) => {
     console.log("发送成功吗", res);
     if (res.message == "SUCCESS") {
+      if (checkedStatus) {
+        art.value.plugins.artplayerPluginDanmuku.emit({
+          text: reviewtext.value, // 文本
+          time: 0, // 所在时间单位秒，默认取播放器当前时间
+          color: "#fff", // 颜色
+          size: 25, // 尺寸
+          border: false, // 是否有描边
+          // mode: 0, // 模式: 滚动 0 或者静止 1
+        });
+      }
       reviewtext.value = ""; //成功就清空输入框
       showEmojiPicker.value = false; //发送成功隐藏表情框
     }
@@ -427,7 +452,7 @@ const toogleVideo = (i) => {
     //获取直播间token+播放url地址
     let { url, token } = res.data;
     // initArtplayer(url + "#" + token);
-    initArtplayer('https://artplayer.org/assets/sample/video.mp4');
+    initArtplayer("https://artplayer.org/assets/sample/video.mp4");
   });
 };
 //utf-8转成字符串-包含emoji表情包格式转换
@@ -469,14 +494,14 @@ const utf8ArrayToString = (array) => {
   return out;
 };
 //WebRTC协议播放
-let art=ref(null);
+let art = shallowRef(null);
 const initArtplayer = (playLink) => {
   console.log("直播间url+直播间token playLink", playLink);
   console.log("直播间rid", rid);
   if (art.value) {
     art.value.destroy();
   }
-  art = new Artplayer({
+  art.value = new Artplayer({
     container: ".artplayer-zbj",
     fullscreen: true, //全屏
     fullscreenWeb: true, //网页全屏
@@ -550,15 +575,28 @@ const initArtplayer = (playLink) => {
         });
       },
     },
-    // video: {
-    //   url: playLink, // 将 WebRTC 流的 URL 设置到 video.url 中
-    // },
-    url: "https://artplayer.org/assets/sample/video.mp4",
-    // autoSize: true,
-    // autoOrientation: true,
+    //  video: {
+    //    url: playLink, // 将 WebRTC 流的 URL 设置到 video.url 中
+    //  },
+    url: playLink,
     plugins: [
       artplayerPluginDanmuku({
-        danmuku: 'https://artplayer.org/assets/sample/danmuku.xml',
+        danmuku: [
+          {
+            text: "666",
+            time: 5,
+            color: "#fff",
+            border: false,
+            mode: 0,
+          },
+          {
+            text: "233",
+            time: 10,
+            color: "#fff",
+            border: false,
+            mode: 0,
+          },
+        ],
         // 以下为非必填
         speed: 5, // 弹幕持续时间，范围在[1 ~ 10]
         margin: [10, "25%"], // 弹幕上下边距，支持像素数字和百分比
