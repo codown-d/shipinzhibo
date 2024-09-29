@@ -8,11 +8,11 @@ export function getToken() {
   const data = localStorage.getItem(TokenKey)
   return data ? JSON.parse(data) : '';
 }
-//存储token
+//存储获取token
 export function setToken(data) {
   const cookieString = JSON.stringify(data);
-  console.log('存储token方法1',TokenKey);
-  console.log('存储token方法2',cookieString);
+  // console.log('存储token方法1',TokenKey);
+  // console.log('存储token方法2',cookieString);
   localStorage.setItem(TokenKey,cookieString)
 }
 //移除token

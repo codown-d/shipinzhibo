@@ -4,10 +4,11 @@ import { inject, onMounted, ref } from 'vue';
 import { navRoutes } from '@/router';
 import { useRoute } from 'vue-router';
 import router from '@/router';
-
-// const tagList = inject('tagList')
+import { useStorage } from "@/utils/lib";
 
 const handleSelect = (path) => {
+  console.log('获取的path是什么',path);
+  useStorage.set("tagAct", JSON.stringify("{}"));
   router.push(path)
   defaultActive.value = path
 }

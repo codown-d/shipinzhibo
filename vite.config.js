@@ -20,6 +20,7 @@ export default defineConfig({
     proxy: {
       "/api": {//以 /api 开头的请求都会被代理
         target: "https://m.zegec.com",//代理目标地址，所有匹配的请求将被转发到这个地址
+        // target: "http://192.168.0.15:8001",//代理目标地址，所有匹配的请求将被转发到这个地址
         changeOrigin: true,//将请求头中的 origin 改为目标地址
       },
     },
@@ -38,4 +39,18 @@ export default defineConfig({
       ],
     },
   },
+   // 添加 base 选项
+  //  base: '/api/', // 你可以根据需要修改这个路径
+
+  //  // 添加 build 选项
+  //  build: {
+  //    outDir: 'dist', // 输出目录，默认为 'dist'
+  //    rollupOptions: {
+  //      output: {
+  //        entryFileNames: 'assets/js/[name]-[hash].js',
+  //        chunkFileNames: 'assets/js/[name]-[hash].js',
+  //        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
+  //      }
+  //    }
+  //  }
 });

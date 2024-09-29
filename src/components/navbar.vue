@@ -11,32 +11,36 @@
         <div class="header_right">
           <!-- 头部-搜索框 -->
           <NavSearch></NavSearch>
+          <span class="nick_name">{{ nick }}</span>
+          <span>
+            <img class="avatar" :src="avatar || userAvatar" @click="userDetails"/>
+          </span>
           <!-- 头部-登陆信息-登陆后展示 -->
-          <div class="user-dom" v-show="deviceToken == '1'">
-            <el-dropdown trigger="click">
-              <span>
+          <!-- <div class="user-dom" v-show="deviceToken == '1'"> -->
+            <!-- <el-dropdown trigger="click"> -->
+              <!-- <span>
                 <img class="avatar" :src="avatar || userAvatar" />
-              </span>
-              <template #dropdown>
+              </span> -->
+              <!-- <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item @click="">
                     账户信息
                   </el-dropdown-item>
                   <el-dropdown-item @click="logOut">
-                    退出登录
+                    绑定账号
                   </el-dropdown-item>
                 </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </div>
+              </template> -->
+            <!-- </el-dropdown> -->
+          <!-- </div> -->
           <!-- 头部-登陆信息-未登陆前展示 -->
-          <div class="mobile_header" v-show="deviceToken == '0'">
+          <!-- <div class="mobile_header" v-show="deviceToken == '0'"> -->
             <!-- <el-icon class="search_icon" size="18px" color="#999999">
               <Search />
             </el-icon> -->
-            <span class="login_text">登录</span>
+            <!-- <span class="login_text">登录</span>
             <el-button class="btn_download" color="var(--el-color-primary)">下载APP</el-button>
-          </div>
+          </div> -->
         </div>
       </div>
     <!-- </Transition> -->
@@ -61,6 +65,8 @@ import NavMenu from './navMenu.vue'
 import { useUserStoreHook } from '@/store/modules/user';
 import { computed,onMounted,ref,onUnmounted,watch  } from 'vue';
 import { useAppStoreHook } from '@/store/modules/app';
+import { useRoute } from 'vue-router';//获取当前路由
+import router from '@/router';
 
 const props = defineProps({
   type: 0
@@ -69,14 +75,18 @@ const props = defineProps({
 const scrollPosition = ref(0);//保存滚动位置
 const deviceToken = ref('1');//登陆的状态
 const userAvatar = 'https://avatars.githubusercontent.com/u/44761321'
-
+//用户头像
 const avatar = computed(() => {
   return useUserStoreHook().avatar
 });
-
+//用户名字
 const nick = computed(() => {
   return useUserStoreHook().nick
 });
+//进入用户详情页
+const userDetails = () => {
+  router.push('/userdetails')
+}
 
 // const store = useAppStoreHook()
 // console.log('登陆的什么玩意',store);
@@ -96,10 +106,10 @@ const nick = computed(() => {
 //   }
 // })
 
-//退出登录
-const logOut = ()=>{
-  useUserStoreHook().logOut()
-}
+//退出登录改为 绑定账号
+// const logOut = ()=>{
+  // useUserStoreHook().logOut()
+// }
 
 // 监听滚动事件，更新滚动位置
 const handleScroll = () => {
@@ -110,6 +120,8 @@ onMounted(() => {
   // console.log('登陆的是什么',device.value);
   //添加滚动事件监听
   window.addEventListener('scroll', handleScroll);
+  // console.log('获取路由是什么',useRoute().path);
+  
 });
 // 组件卸载时移除滚动事件监听
 onUnmounted(() => {
@@ -140,6 +152,10 @@ watch(scrollPosition, (value) => {
 
   background-color: #f4f4f4;
   opacity: 0.85;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 101;
 }
 //滚动距离吸顶部
 .fixed {
@@ -213,12 +229,19 @@ watch(scrollPosition, (value) => {
 .user-dom{
   margin-left: 30PX;
 }
-
+.nick_name{
+  display: block;
+  font-size: 16px;
+  color: #090E16;
+  margin-left: 49px;
+}
 .avatar {
+  display: block;
   width: 30PX;
   height: 30PX;
   border-radius: 50%;
   cursor: pointer;
+  margin-left: 10px;
 }
 
 
@@ -226,9 +249,9 @@ watch(scrollPosition, (value) => {
   transition: all 0.3s ease-out;
 }
 
-.nav-leave-active {
+// .nav-leave-active {
   // transition: all 0.2s ease-out;
-}
+// }
 
 .nav-enter-from,
 .nav-leave-to {

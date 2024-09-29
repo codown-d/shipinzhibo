@@ -9,12 +9,13 @@
       </div>
     </div>
 
+    <Swiper :dayIndex="currentIndex"></Swiper>
     <!-- 轮播图 mouseover鼠标移入 mouseout移出 @mouseout="auto"-->
-    <div class="pos-r" style="height: 200px; padding: 0px 32px; margin-bottom: 20px;"  @mouseover="stop">
+    <div v-if="false" class="pos-r" style="height: 200px; padding: 0px 32px; margin-bottom: 20px;"  @mouseover="stop">
       <div class="swiper-container wh-full pos-r overflow-hidden">
         <ul class="swiper-main h-full dflex pos-a" :class="{'animated-duration': animated}" :style="{transform: `translate3d(-${current * itemWidth}px, 0,0)`}">
           <!-- li的宽度main-width 暂时不用 :style="{ width: itemWidth + 'px' }"-->
-          <li v-for="(item, index) in banner" :key="index" class="swiper-item h-full dflex-gap2" :style="{ width: itemWidth + 'px' }">
+          <li class="swiper-item h-full dflex-gap2" :style="{ width: itemWidth + 'px' }">
             <!-- arr第一个对象：div class="h-full flex1 border-radius overflow-hidden cursor-pointer" @click="to(item.arr[0])">
               <img v-if="item.arr[0]" class=" wh-full object-fit-cover" :src="item.arr[0].url" alt="" />
             </div> -->
@@ -23,14 +24,14 @@
               <img v-if="item.arr[1]" class=" wh-full object-fit-cover"  :src="item.arr[1].url" alt="" />
             </div> -->
             <!-- 暂时展示-用于变量渲染 -->
-            <div class="h-full overflow-hidden cursor-pointer custom-wh" @click="to(item.arr[0])">
+            <div v-for="(item, index) in banner" :key="index" class="h-full overflow-hidden cursor-pointer custom-wh" @click="to(item.roomIds,item.owner,item.type)">
               <div class="carousel-head">
                 <div class="carousel-headlfet">
-                  <span class="carousel-title">奥运女篮1</span>
+                  <span class="carousel-title">{{ item.title }}</span>
                   <div class="carousel-time">
-                    <span class="carousel-month">07-31</span>
-                    <span class="carousel-hms">21:00</span>
-                    <span class="carousel-game">比赛中</span>
+                    <span class="carousel-month">{{item.formattedDate}}</span>
+                    <span class="carousel-hms">{{item.formattedTime}}</span>
+                    <span class="carousel-game">{{item.status == 1 ? '未开始' : item.status == 2 ? '进行中' : '已结束'}}</span>
                   </div>
                 </div>
                 <span class="carousel-headright">直播间</span>
@@ -38,167 +39,18 @@
               <div class="banav-message">
                 <div class="banav-session">
                   <div class="session-left">
-                    <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt="">
-                    <span class="session-name">中国女篮</span>
+                    <!-- <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt=""> -->
+                    <img class="session-img" :src="item.image ? item.image: 'https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg'" alt="">
+                    <span class="session-name">{{item.team}}</span>
                   </div>
-                  <div style="font-size: 14px; color: #fff; line-height: 32px;">12</div>
+                <div style="font-size: 14px; color: #fff; line-height: 32px;">{{ item.score }}</div>
                 </div>
                 <div class="banav-session" style="margin-top: 10px;">
                   <div class="session-left">
-                    <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt="">
-                    <span class="session-name">塞尔维亚女篮</span>
+                    <img class="session-img" :src="item.toImage ? item.toImage : 'https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg'" alt="">
+                    <span class="session-name">{{item.toTeam}}</span>
                   </div>
-                  <div style="font-size: 14px; color: #fff; line-height: 32px;">18</div>
-                </div>
-              </div>
-            </div>
-            <!-- 暂时展示 -->
-            <div class="h-full overflow-hidden cursor-pointer custom-wh" @click="to(item.arr[1])">
-              <div class="carousel-head">
-                <div class="carousel-headlfet">
-                  <span class="carousel-title">奥运女篮2</span>
-                  <div class="carousel-time">
-                    <span class="carousel-month">07-31</span>
-                    <span class="carousel-hms">21:00</span>
-                    <span class="carousel-game">比赛中</span>
-                  </div>
-                </div>
-                <span class="carousel-headright">直播间</span>
-              </div>
-              <div class="banav-message">
-                <div class="banav-session">
-                  <div class="session-left">
-                    <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt="">
-                    <span class="session-name">中国女篮</span>
-                  </div>
-                  <div style="font-size: 14px; color: #fff; line-height: 32px;">12</div>
-                </div>
-                <div class="banav-session" style="margin-top: 10px;">
-                  <div class="session-left">
-                    <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt="">
-                    <span class="session-name">塞尔维亚女篮</span>
-                  </div>
-                  <div style="font-size: 14px; color: #fff; line-height: 32px;">18</div>
-                </div>
-              </div>
-            </div>
-            <!-- 暂时展示 -->
-            <div class="h-full overflow-hidden cursor-pointer custom-wh" @click="to(item.arr[1])">
-              <div class="carousel-head">
-                <div class="carousel-headlfet">
-                  <span class="carousel-title">奥运女篮3</span>
-                  <div class="carousel-time">
-                    <span class="carousel-month">07-31</span>
-                    <span class="carousel-hms">21:00</span>
-                    <span class="carousel-game">比赛中</span>
-                  </div>
-                </div>
-                <span class="carousel-headright">直播间</span>
-              </div>
-              <div class="banav-message">
-                <div class="banav-session">
-                  <div class="session-left">
-                    <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt="">
-                    <span class="session-name">中国女篮</span>
-                  </div>
-                  <div style="font-size: 14px; color: #fff; line-height: 32px;">12</div>
-                </div>
-                <div class="banav-session" style="margin-top: 10px;">
-                  <div class="session-left">
-                    <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt="">
-                    <span class="session-name">塞尔维亚女篮</span>
-                  </div>
-                  <div style="font-size: 14px; color: #fff; line-height: 32px;">18</div>
-                </div>
-              </div>
-            </div>
-            <!-- 暂时展示 -->
-            <div class="h-full overflow-hidden cursor-pointer custom-wh" @click="to(item.arr[1])">
-              <div class="carousel-head">
-                <div class="carousel-headlfet">
-                  <span class="carousel-title">奥运女篮4</span>
-                  <div class="carousel-time">
-                    <span class="carousel-month">07-31</span>
-                    <span class="carousel-hms">21:00</span>
-                    <span class="carousel-game">比赛中</span>
-                  </div>
-                </div>
-                <span class="carousel-headright">直播间</span>
-              </div>
-              <div class="banav-message">
-                <div class="banav-session">
-                  <div class="session-left">
-                    <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt="">
-                    <span class="session-name">中国女篮</span>
-                  </div>
-                  <div style="font-size: 14px; color: #fff; line-height: 32px;">12</div>
-                </div>
-                <div class="banav-session" style="margin-top: 10px;">
-                  <div class="session-left">
-                    <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt="">
-                    <span class="session-name">塞尔维亚女篮</span>
-                  </div>
-                  <div style="font-size: 14px; color: #fff; line-height: 32px;">18</div>
-                </div>
-              </div>
-            </div>
-            <!-- 暂时展示 -->
-            <div class="h-full overflow-hidden cursor-pointer custom-wh" @click="to(item.arr[1])">
-              <div class="carousel-head">
-                <div class="carousel-headlfet">
-                  <span class="carousel-title">奥运女篮5</span>
-                  <div class="carousel-time">
-                    <span class="carousel-month">07-31</span>
-                    <span class="carousel-hms">21:00</span>
-                    <span class="carousel-game">比赛中</span>
-                  </div>
-                </div>
-                <span class="carousel-headright">直播间</span>
-              </div>
-              <div class="banav-message">
-                <div class="banav-session">
-                  <div class="session-left">
-                    <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt="">
-                    <span class="session-name">中国女篮</span>
-                  </div>
-                  <div style="font-size: 14px; color: #fff; line-height: 32px;">12</div>
-                </div>
-                <div class="banav-session" style="margin-top: 10px;">
-                  <div class="session-left">
-                    <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt="">
-                    <span class="session-name">塞尔维亚女篮</span>
-                  </div>
-                  <div style="font-size: 14px; color: #fff; line-height: 32px;">18</div>
-                </div>
-              </div>
-            </div>
-            <!-- 暂时展示 -->
-            <div class="h-full overflow-hidden cursor-pointer custom-wh" @click="to(item.arr[1])">
-              <div class="carousel-head">
-                <div class="carousel-headlfet">
-                  <span class="carousel-title">奥运女篮6</span>
-                  <div class="carousel-time">
-                    <span class="carousel-month">07-31</span>
-                    <span class="carousel-hms">21:00</span>
-                    <span class="carousel-game">比赛中</span>
-                  </div>
-                </div>
-                <span class="carousel-headright">直播间</span>
-              </div>
-              <div class="banav-message">
-                <div class="banav-session">
-                  <div class="session-left">
-                    <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt="">
-                    <span class="session-name">中国女篮</span>
-                  </div>
-                  <div style="font-size: 14px; color: #fff; line-height: 32px;">12</div>
-                </div>
-                <div class="banav-session" style="margin-top: 10px;">
-                  <div class="session-left">
-                    <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt="">
-                    <span class="session-name">塞尔维亚女篮</span>
-                  </div>
-                  <div style="font-size: 14px; color: #fff; line-height: 32px;">18</div>
+                  <div style="font-size: 14px; color: #fff; line-height: 32px;">{{ item.toScore }}</div>
                 </div>
               </div>
             </div>
@@ -213,42 +65,9 @@
       </div>
   	</div>
 
-    <!--  -->
-    <div class="layout-Module-head">
-      <div class="layout-Module-balltitle">足球</div>
-      <button class="button-switch" :class="{ 'active': ballIndex === index }" v-for="(item, index) in ballBtns" @click="ballActiveIndex(item,index)">
-        {{ item.namebtn }}
-      </button>
-    </div>
-    <div class="layout-Module-container">
-      <div class="layout-ul">
-        <a class="layout-a" href="">
-          <img class="layout-img" src="https://rpic.douyucdn.cn/live-cover/640/360/4a84f88a125a65eb286da0c6d435ae0c.avif" alt="">
-          <div class="layout-textbox">
-            <div class="layout-bot-title">
-              <div class="layout-bot-title-l">费德勒VS纳达尔 谁才是真正的</div>
-              <div class="layout-bot-title-r">网球</div>
-            </div>
-            <div class="layout-bot-contnt">
-              <div class="contnt-lfetbox">
-                <img class="contnt-lfetbox-img" src="https://apic.douyucdn.cn/upload/avanew/face/201803/23/17/faa711e232041d7525a1bd695bf8fa8e_big.jpg" alt="">
-                <div class="contnt-lfetbox-text">一诺台球解说</div>
-              </div>
-              <div class="contnt-ringhbox">
-                <img class="contnt-ringhbox-img" src="https://apic.douyucdn.cn/upload/avanew/face/201803/23/17/faa711e232041d7525a1bd695bf8fa8e_big.jpg" alt="">
-                <div class="contnt-ringhbox-text">122.3万</div>
-              </div>
-            </div>
-            <div class="layout-bot-competition">
-              <span class="layout-bot-span">体育</span>
-              <span class="layout-bot-span">网球</span>
-              <span class="layout-bot-span">赛事</span>
-            </div>
-          </div>
-        </a>
-        
-        
-      </div>
+    <!-- 赛事直播 -->
+    <div :class="device ? '' : 'mobile_plate'" style="background-color: #fff;">
+      <Plate :tagList="matchRoomList" :headerTitle="'赛事直播'"></Plate>
     </div>
   </div>
 </template>
@@ -257,7 +76,17 @@
 import { ref, computed, onMounted, onUnmounted,watchEffect,nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { debounce } from 'lodash-es';//防抖动
+import Plate from '@/components/Plate.vue';
+import Swiper from '@/components/Swiper.vue';
+import { getLiveMatchList,getMatchRoomList } from '@/api/competition';
 const today = new Date();
+//给到轮播图数据接口处理开始时间与结束时间
+const formatDate = (date, time) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day} ${time}`;
+};
 const dateBtns = Array.from({ length: 7 }, (_, index) => {
   const date = new Date(today.getTime() + index * 24 * 60 * 60 * 1000);
   return `${date.getMonth() + 1}-${date.getDate()}`;
@@ -266,63 +95,66 @@ const currentIndex = ref(0);
 //日期选择
 const setActiveIndex = (dateStr,index) =>{
   currentIndex.value = index;
+  // console.log('点击时间选中、dateStr',dateStr);
+  // console.log('点击时间选中、index',index);
+  getLiveMatchType(currentIndex.value,1);
 }
 //足球按钮数据
-const ballBtns = ref([
-  {
-    namebtn:'所有',
-  },
-  {
-    namebtn:'直播中',
-  },
-]);
-//足球按钮点击下标
-const ballIndex = ref(0);
-//点击足球按钮
-const ballActiveIndex = (itemd,index) =>{
-  console.log('点击足球按钮',index);
-  ballIndex.value = index;
-}
+// const ballBtns = ref([
+//   {
+//     namebtn:'换一批',
+//   },
+//   {
+//     namebtn:'直播中',
+//   },
+// ]);
+//换一批按钮点击下标
+// const ballIndex = ref(0);
+//换一批按钮
+// const ballActiveIndex = (itemd,index) =>{
+//   console.log('点击换一批按钮',index);
+//   ballIndex.value = index;
+// }
 
 //轮播图数据
 const router = useRouter();
 const banner = ref([
-  {
-    arr:[
-      {
-        path: '/goods?goodsId=10238',
-        url: 'https://img.zgroup.cn/f41e41fdcd5a184b8325d86b7c41d4e8c7f842e2_s.webp'
-      },
-      {
-        path: '/goods?goodsId=10241',
-        url: 'https://img.zgroup.cn/1f3395982e5c0fef7a038877541eb5c3ecb0fe83_s.webp'
-      },
-    ]
-  },
-  {
-    arr:[
-      {
-        path: '/goods?goodsId=10217',
-        url: 'https://img.zgroup.cn/5db8291c808c4a7fddbfa711f9534a3a5d9dbfdd_s.webp'
-      },
-      {
-        path: '/goods?goodsId=10075',
-        url: 'https://img.zgroup.cn/ac4d44b8c61c4d66cbedd7e5eaa486c96a833f8f_s.webp'
-      }
-    ]
-  },
-  {
-    arr:[
-      {
-        path: '/goods?goodsId=10223',
-        url: 'https://img.zgroup.cn/30a0d7732f2e5dd0aa14702c375c7a015c2f32f3_s.webp'
-      },
-      {
-        path: '/goods?goodsId= 10196',
-        url: 'https://img.zgroup.cn/d829c417439d0e35056c4f357a3430dc69adc43a_s.webp'
-      }
-    ]
-  }
+  // {
+  //   arr:[
+  //     {
+  //       path: '/goods?goodsId=10238',
+  //       url: 'https://img.zgroup.cn/f41e41fdcd5a184b8325d86b7c41d4e8c7f842e2_s.webp'
+  //     },
+  //     {
+  //       path: '/goods?goodsId=10241',
+  //       url: 'https://img.zgroup.cn/1f3395982e5c0fef7a038877541eb5c3ecb0fe83_s.webp'
+  //     },
+  //   ]
+  // },
+  // {
+  //   arr:[
+  //     {
+  //       path: '/goods?goodsId=10217',
+  //       url: 'https://img.zgroup.cn/5db8291c808c4a7fddbfa711f9534a3a5d9dbfdd_s.webp'
+  //     },
+  //     {
+  //       path: '/goods?goodsId=10075',
+  //       url: 'https://img.zgroup.cn/ac4d44b8c61c4d66cbedd7e5eaa486c96a833f8f_s.webp'
+  //     }
+  //   ]
+  // },
+  // {
+  //   arr:[
+  //     {
+  //       path: '/goods?goodsId=10223',
+  //       url: 'https://img.zgroup.cn/30a0d7732f2e5dd0aa14702c375c7a015c2f32f3_s.webp'
+  //     },
+  //     {
+  //       path: '/goods?goodsId= 10196',
+  //       url: 'https://img.zgroup.cn/d829c417439d0e35056c4f357a3430dc69adc43a_s.webp'
+  //     }
+  //   ]
+  // }
 ]);
 const current = ref(0);
 const animated = ref(true);
@@ -335,10 +167,9 @@ let timer = null;
 // }
 
 // 轮播图对应跳转路径
-const to = (item) => {
-  if (item.path) {
-    router.push(item.path);
-  }
+const to = (rid,owner,type) => {
+  //需要获m3u8播放地址传给详情页面config: "{\"pull_url\":\"https://phonews.qing.mgtv.com/nn_live/nn_x64/dWlwPTEwMy43MS43M
+  window.open(`/detail/${rid}/${owner}/${type}`, "_blank");
 };
 //轮播图左边按钮
 const pre = () => {
@@ -357,6 +188,8 @@ const pre = () => {
   } else {
     animated.value = true; 
     current.value--; // 向前切换
+    console.log('点击上一页',current.value);
+    getLiveMatchType(currentIndex.value,current.value-1);
   }
 };
 //轮播图右边按钮
@@ -376,6 +209,8 @@ const next = () => {
   } else {
     animated.value = true; 
     current.value++; // 向后切换
+    console.log('点击下一页',current.value);
+    getLiveMatchType(currentIndex.value,current.value+1);
   }
 };
 //开启轮播
@@ -411,9 +246,63 @@ watchEffect(() => {
   console.log('实时获取宽度',itemWidth.value);
 });
 
+//获取全部数据
+const dataCallAll = () => {
+  getMatchRoomListType();//赛事直播
+  getLiveMatchType(0,1);//轮播图接口数据
+}
+//赛事直播列表数据
+const matchRoomList = ref([]);//赛事直播类型数据
+const getMatchRoomListType = () => {
+  let param = {
+    type: 1,
+    pageNum: 1,
+    pageSize: 20,
+  }
+  const needToken = true; // 根据实际需要设置是否需要token
+  getMatchRoomList(param,needToken).then(res => {
+    console.log('赛事直播数据',res);
+    matchRoomList.value = res.data
+  }).catch(error => {
+    console.log(error)
+  });
+}
+//获取赛事数据
+const getLiveMatchType = (index,pageNum) => {
+  console.log('下一页是什么', pageNum)
+  // let pageNum = pageNum+1;//下一页
+  const selectedDate = new Date(today.getTime() + index * 24 * 60 * 60 * 1000);
+  const beginDate = formatDate(selectedDate, '00:00:00');
+  const endDate = formatDate(selectedDate, '23:59:59');
+  let param = {
+    type: 1,
+    beginDate:beginDate,//开始时间
+    endDate:endDate,//结束时间
+    pageNum: pageNum,
+    pageSize: 6,//每页6条数据
+  }
+  const needToken = true; // 根据实际需要设置是否需要token
+  getLiveMatchList(param,needToken).then(res => {
+     // 处理响应数据，将 beginTime 转换为两个字段
+     banner.value = res.data.rows.map(match => {
+      const beginTime = new Date(match.beginTime);
+      return {
+        ...match,
+        formattedDate: `${String(beginTime.getMonth() + 1).padStart(2, '0')}-${String(beginTime.getDate()).padStart(2, '0')}`,
+        formattedTime: `${String(beginTime.getHours()).padStart(2, '0')}:${String(beginTime.getMinutes()).padStart(2, '0')}`,
+      };
+    });
+    // banner.value = res.data
+    console.log('[ 赛事列表数据 ] >', banner.value)
+  }).catch(error => {
+    console.log(error)
+  });
+}
+
 onMounted(() => {
   stop();
   checkLodash();
+  dataCallAll();//查询全部数据
 });
 
 onUnmounted(() => {
@@ -611,6 +500,8 @@ a{
             display: flex;
             margin-top: 5px;
             .carousel-month{
+              display: block;
+              width: 0.2rem;
               color: #fff;
               font-size: 14px;
               margin-right: 5px;
@@ -621,6 +512,8 @@ a{
               margin-right: 5px;
             }
             .carousel-game{
+              display: block;
+              width: 0.24rem;
               color: #ff0000;
               font-size: 14px;
             }
@@ -629,12 +522,14 @@ a{
         .carousel-headright{
           display: block;
           height: 30px;
+          width: 0.4rem;
           line-height: 30px;
+          text-align: center;
           font-size: 16px;
           color: #fda031;
           border-radius: 5px;
           border: #fda031 1px solid;
-          padding: 0 10px;
+          // padding: 0 10px;
           margin-top: 16px;
         }
       }

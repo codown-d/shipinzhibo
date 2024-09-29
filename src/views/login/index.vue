@@ -25,15 +25,16 @@ const submitForm = (formEl) => {
       console.log('登陆1');
       //调用公共方法登陆
       useUserStoreHook().loginByUsername({ username, password }).then(res => {
-          console.log('登陆2');
-          if (res.message === 'SUCCESS') {
-            message("登录成功", { type: "success" });
-            router.push('/home')
-          } else {
-            message("登录失败", { type: "error" });
-          }
-        })
-        .finally(() => (loading.value = false));
+        console.log('登陆2');
+        if (res.message === 'SUCCESS') {
+          // message("登录成功", { type: "success" });
+          // router.push('/home')
+        } else {
+          message("登录失败", { type: "error" });
+        }
+      }).finally(() => (
+        loading.value = false
+      ));
     } else {
       console.log('error submit!')
     }

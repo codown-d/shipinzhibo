@@ -52,7 +52,7 @@ class PureHttp {
     PureHttp.axiosInstance.interceptors.request.use(
       async (config) => {
         // 开启进度条动画
-        NProgress.start();
+        // NProgress.start();
         // 优先判断post/get等方法是否传入回调，否则执行初始化设置等回调
         if (typeof config.beforeRequestCallback === "function") {
           config.beforeRequestCallback(config);
@@ -66,16 +66,23 @@ class PureHttp {
         // console.log('是什么数据',config.headers);
 
         /** 请求白名单，放置一些不需要`token`的接口（通过设置请求白名单，防止`token`过期后再请求造成的死循环问题） */
-        const whiteList = ["/login"];
+        // const whiteList = ["/login"];
+        const whiteList = ["/home"];
         return whiteList.some((url) => config.url.endsWith(url))
           ? config
           : new Promise((resolve) => {
               const data = getToken();
-              console.log('config===',config)
+              const imeidata = localStorage.getItem('browserId');//浏览器指纹
+              // console.log('浏览器指纹有token一起传',imeidata);
+              // console.log('config===',config)
               //接口需要token标识config.needToken为true再赋值
               if (config.needToken && data) {
                 config.headers["Ticket"] = data.access_token
                 config.headers["Uid"] = data.uid
+                config.headers["imei"] = imeidata
+                resolve(config);
+              } else if(config.imei){//处理游客登录的请求头
+                config.headers["imei"] = config.imei
                 resolve(config);
               } else {
                 resolve(config);
@@ -118,9 +125,10 @@ class PureHttp {
         //用户的token过期
         const {data} = $error.response
         if(data.code === 401){
-          // removeToken()//移除token
-          message("token过期，请重新登录", { type: "error" });
+          removeToken()//移除token
+          // message("token过期，请重新登录", { type: "error" });
           // router.push('/login')//跳转登陆页面
+          router.push('/home')//跳转首页页面
         }
         // 关闭进度条动画
         NProgress.done();
