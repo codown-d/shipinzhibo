@@ -33,10 +33,18 @@
       <!-- 右侧个人信息、热门话题 -->
       <div class="rightMenu__YES7m">
         <!-- 个人信息 -->
-        <div></div>
+        <div class="personage">
+          <div class="personage-nav">
+            <img class="avatar_tx":src="avatar" alt="">
+            <div class="personage-mane">{{ nick }}</div>
+          </div>
+        </div>
+        <div class="popular-anchor margin-top-sm">
+          <popular-anchor></popular-anchor>
+        </div>
         <!-- 热门话题 -->
-        <div>
-         
+        <div class="hotTopic margin-top-sm">
+          <hot-topic></hot-topic>
         </div>
       </div>
     </div>
@@ -45,11 +53,22 @@
 <script setup>
 import Navbar from '@/components/navbar.vue'
 import { useRoute, useRouter } from 'vue-router';//获取当前路由
-import { ref, onMounted,defineProps, onUnmounted,nextTick,onUpdated,watch} from 'vue';
+import { ref,computed,onMounted,defineProps, onUnmounted,nextTick,onUpdated,watch, h} from 'vue';
+import HotTopic from '@/components/HotTopic.vue'
+import PopularAnchor from '@/components/PopularAnchor.vue'
 const route = useRoute();
 const router = useRouter();
 const selectedRoute = ref(route.path);
-
+import { useUserStoreHook } from '@/store/modules/user';
+const userStore = useUserStoreHook();
+//用户头像
+const avatar = computed(() => {
+  return userStore.avatar
+})
+//用户名字
+const nick = computed(() => {
+  return userStore.nick
+});
 
 // const isActive = (path) => {
 //   console.log('选中的路由',path);
@@ -180,8 +199,48 @@ onMounted(()=>{
         background-color: antiquewhite;
         margin-left: 6px;
         padding-top: 6px;
+        box-sizing: border-box;
         width: 260px;
-        // height: 100%;
+        .personage{
+          width: 100%;
+          height: 0.63088rem;
+          background-color: #fff;
+          padding: 30px 16px;
+          box-sizing: border-box;
+          // filter: blur(8px);
+          .personage-nav{
+            display: flex;
+            .avatar_tx{
+              display: block;
+              width: 0.2855rem;
+              height: 0.2855rem;
+              border-radius: 50%;
+            }
+            .personage-mane{
+              font-size: 16px;
+              line-height: 0.2855rem;
+              margin-left: 20px;
+            }
+          }
+        }
+        // .personage::before {
+        //   content: '';
+        //   position: absolute;
+        //   top: 0;
+        //   left: 0;
+        //   width: 100%;
+        //   height: 100%;
+        //   background-size: cover; /* 确保背景图覆盖整个元素 */
+        //   background-position: 50%;
+        //   background-repeat: repeat;
+        //   -webkit-filter: blur(8px);
+        //   filter: blur(8px);
+        //   z-index: -1;
+        //   background-image: var(avatar);
+        // }
+        .hotTopic{
+
+        }
       }
     // }
   }

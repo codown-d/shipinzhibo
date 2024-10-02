@@ -2,7 +2,7 @@
   <div :style="{ width: isCollapsed ? '48px' : '200px', height: `${dynamicHeight}px`}" class="layout-Aside" :class="{ 'is-collapsed': isCollapsed }">
     <!-- isCollapsed为false,则显示展开的样式 -->
     <div class="menu-container" v-if="!isCollapsed">
-      <div class="menu-item" :class="{ firstOrderSelected: currentPath ===item.path }" v-for="item in menuList" :key="item.id" @click="tapsecondary(item)">
+      <div class="menu-item" :class="{ firstOrderSelected: currentPath===item.path }" v-for="item in menuList" :key="item.id" @click="tapsecondary(item)">
         <i :class="item.icon"></i>
         <span class="menu-text">{{ item.text }}</span>
       </div>

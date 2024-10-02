@@ -21,11 +21,7 @@
                 <!-- 直播间房号标题之类 -->
                 <div class="detailsRight-titlecontent">
                   <!-- <img class="titlecontent-img" src="https://avatars.githubusercontent.com/u/44761321" alt=""> -->
-                  <img
-                    class="titlecontent-img"
-                    :src="broadcastDetailsList.avatar"
-                    alt=""
-                  />
+                  <img class="titlecontent-img" :src="broadcastDetailsList.avatar" alt="">
                   <div class="titlecontent-nav">
                     <div class="titlecontent-nav-title">
                       {{ broadcastDetailsList.title }}
@@ -49,25 +45,13 @@
                       <span :class="{ 'followshare-follow-gz': true, selected: isFollowSelected }">关注</span>
                     </div>
                     <div class="followshare-share" :class="{ selected: isShareSelected }" @click="toggleSelected('share')">15984</div> -->
-                    <div
-                      class="followshare-follow"
-                      @click="toggleSelected('follow')"
-                    >
-                      <img
-                        v-if="!isShareSelected"
-                        class="followshare-follow-img"
-                        src="@/assets/images/guanzhu.svg"
-                        alt=""
-                      />
-                      <a v-if="!isShareSelected" class="followshare-follow-gz"
-                        >关注</a
-                      >
-                      <a v-if="isShareSelected" class="followshare-follow-gz"
-                        >已关注</a
-                      >
-                      <!-- <span v-if="!isShareSelected" class="followshare-follow-gz">关注</span> -->
-                      <!-- <span v-if="isShareSelected" class="followshare-follow-gz">已关注</span> -->
-                    </div>
+                    <div class="followshare-follow" @click="toggleSelected('follow')">
+                    <img v-if="!isShareSelected" class="followshare-follow-img" src="@/assets/images/guanzhu.svg" alt="">
+                    <a v-if="!isShareSelected" class="followshare-follow-gz">关注</a>
+                    <a v-if="isShareSelected" class="followshare-follow-gz">已关注</a>
+                    <!-- <span v-if="!isShareSelected" class="followshare-follow-gz">关注</span> -->
+                    <!-- <span v-if="isShareSelected" class="followshare-follow-gz">已关注</span> -->
+                  </div>
                     <!-- 10000以内上下浮动，取200以内加或者减 -->
                     <div class="followshare-share">{{ currentNumber }}</div>
                   </div>
@@ -82,92 +66,31 @@
                 <!-- 左侧福袋红包 -->
                 <div class="bonus-redpacket">
                   <div class="bonus-redpacket-left">
-                    <img
-                      class="bonus-redpacket-leftimg"
-                      src="@/assets/images/mybag.webp"
-                      alt=""
-                      @click="clickLuckybag"
-                    />
+                    <img class="bonus-redpacket-leftimg" src="@/assets/images/mybag.webp" alt="" @click="clickLuckybag">
                   </div>
                   <div class="bonus-redpacket-right">
-                    <template
-                      v-for="(item, i) in myRedPacketArray"
-                      :key="item.id"
-                    >
+                    <template v-for="(item, i) in myRedPacketArray" :key="item.id">
                       <div class="img-wrapper">
                         <!-- 倒计时不等于0 默认显示接口图片和倒计时数据 -->
-                        <img
-                          v-if="
-                            item.timeLimitFormatted !== 0 && item.status == 0
-                          "
-                          class="bonus-redpacket-rightimg"
-                          :src="item.image"
-                          alt=""
-                        />
-                        <div
-                          v-if="
-                            item.timeLimitFormatted !== 0 && item.status == 0
-                          "
-                          class="redPacketTime"
-                        >
-                          {{ parseTime(item.timeLimitFormatted) }}
-                        </div>
+                        <img v-if="item.timeLimitFormatted !== 0 && item.status == 0" class="bonus-redpacket-rightimg" :src="item.image" alt="">
+                        <div v-if="item.timeLimitFormatted !== 0 && item.status == 0" class="redPacketTime">{{ parseTime(item.timeLimitFormatted)}}</div>
                         <!-- 待领取红包=@load="onGifLoad(item)"加载完成触发事件 -->
-                        <img
-                          v-if="
-                            item.timeLimitFormatted == 0 && item.status == 0
-                          "
-                          class="special-effect"
-                          src="/dailingqu.gif"
-                          alt="GIF"
-                          @click="winOrNot(item)"
-                        />
+                        <img v-if="item.timeLimitFormatted == 0 && item.status == 0" class="special-effect" src="/dailingqu.gif" alt="GIF" @click="winOrNot(item)">
                         <!-- ae解析的json特效图-待领取 -->
                         <!-- <div v-else :ref="el => lottieContainers[item.id] = el" class="special-effect"></div> -->
                         <!-- 已领取 -->
-                        <img
-                          v-if="
-                            item.timeLimitFormatted == 0 && item.status == 1
-                          "
-                          class="bonus-redpacket-rightimg"
-                          :src="item.image"
-                          alt=""
-                          @click="winOrNotAlready(item)"
-                        />
-                        <div
-                          v-if="
-                            item.timeLimitFormatted == 0 && item.status == 1
-                          "
-                          class="redPacketTime"
-                        >
-                          已领取
-                        </div>
+                        <img v-if="item.timeLimitFormatted == 0 && item.status == 1" class="bonus-redpacket-rightimg" :src="item.image" alt="" @click="winOrNotAlready(item)">
+                        <div v-if="item.timeLimitFormatted == 0 && item.status == 1" class="redPacketTime">已领取</div>
                       </div>
                     </template>
                   </div>
                 </div>
                 <!-- 右侧小游戏 -->
                 <div class="mini-games">
-                  <img
-                    class="mini-gamesimg"
-                    src="@/assets/images/redpacket1.png"
-                    alt=""
-                  />
-                  <img
-                    class="mini-gamesimg"
-                    src="@/assets/images/redpacket1.png"
-                    alt=""
-                  />
-                  <img
-                    class="mini-gamesimg"
-                    src="@/assets/images/redpacket1.png"
-                    alt=""
-                  />
-                  <img
-                    class="mini-gamesimg"
-                    src="@/assets/images/redpacket1.png"
-                    alt=""
-                  />
+                  <img class="mini-gamesimg" src="@/assets/images/redpacket1.png" alt="">
+                  <img class="mini-gamesimg" src="@/assets/images/redpacket1.png" alt="">
+                  <img class="mini-gamesimg" src="@/assets/images/redpacket1.png" alt="">
+                  <img class="mini-gamesimg" src="@/assets/images/redpacket1.png" alt="">
                 </div>
               </div>
             </div>
@@ -194,28 +117,14 @@
                   </div>
                   <!-- 评论区 -->
                   <div class="detailsRight-chatreview">
-                    <div
-                      class="chatMessage"
-                      v-for="(item, i) in messageList"
-                      :key="item.uid"
-                    >
-                      <!-- 评论消息text -->
-                      <div class="chatMessage-username">{{ item.uid }}</div>
-                      <div
-                        v-show="item.first == '10'"
-                        class="chatMessage-maohao"
-                      >
-                        :
-                      </div>
-                      <div
-                        v-show="item.first == '10'"
-                        class="chatMessage-usertext"
-                      >
-                        {{ item.dataName }}
-                      </div>
-                      <!-- <div v-show="item.first =='400'" class="enterLeave-chatMessage-usertext">{{item.enterLeaveDataName}}</div> -->
-                      <!-- <div v-show="item.first =='401'" class="enterLeave-chatMessage-usertext">{{item.enterLeaveDataName}}</div> -->
-                    </div>
+                    <div class="chatMessage" v-for="(item, i) in messageList" :key="item.uid">
+                    <!-- 评论消息text -->
+                    <div class="chatMessage-username">{{item.uid}}</div>
+                    <div v-show="item.first =='10'" class="chatMessage-maohao">:</div>
+                    <div v-show="item.first =='10'" class="chatMessage-usertext">{{item.dataName}}</div>
+                    <!-- <div v-show="item.first =='400'" class="enterLeave-chatMessage-usertext">{{item.enterLeaveDataName}}</div> -->
+                    <!-- <div v-show="item.first =='401'" class="enterLeave-chatMessage-usertext">{{item.enterLeaveDataName}}</div> -->
+                  </div>
                     <!-- 进入或者离开直播间text -->
                     <div class="ent-room">
                       <!-- <div class="ent-roomuid">{{ entroomMessageList.uid }}</div> -->
@@ -359,7 +268,7 @@
 </template>
 <script setup>
 import { Search } from "@element-plus/icons-vue";
-import { ElLoading } from "element-plus";
+import { ElLoading } from 'element-plus';
 import Navbar from "@/components/navbar.vue";
 import Leftmenu from "@/components/Leftmenu.vue";
 import { getRoomKey, getMessageKey } from "@/api/room";
@@ -370,7 +279,7 @@ import {
   getdetailsList,
   getWhetherFollowList,
   getVoiceTvList,
-  getConfValueByKeyList,
+  getConfValueByKeyList
 } from "@/api/detail";
 import { useRoute } from "vue-router";
 import { JcLive } from "@/utils/live";
@@ -401,7 +310,9 @@ import drawVideoFramesToCanvas from "@/utils/drawVideoFramesToCanvas";
 import { message } from "@/utils/message";
 import { cloneDeep } from "lodash-es"; //深拷贝
 import lottie from "lottie-web";
-// import videoManagement from "@/utils/videoManagement";//视频播放管理
+// import CustomVideoPlayer from "../../utils/customVideoPlayer";
+import CustomVideoPlayer from "../../utils/VideoPlayerUtils";//视频播放管理
+var globalVideo = null;
 const isLoading = ref(true); // 加载状态
 //随机数
 const currentNumber = ref(0);
@@ -472,8 +383,8 @@ const getFollow = (item) => {
   // 显示全局加载指示器
   const loadingInstance = ElLoading.service({
     lock: true,
-    text: "Loading",
-    background: "rgba(0, 0, 0, 0.7)",
+    text: 'Loading',
+    background: 'rgba(0, 0, 0, 0.7)',
   });
   let param = {
     followUid: owner,
@@ -491,13 +402,13 @@ const getFollow = (item) => {
           // console.log("点击关注了吗=关注", isShareSelected.value);
         }
         isLoading.value = false; // 数据加载完成，隐藏加载状态
-        loadingInstance.close(); //销毁loading
+        loadingInstance.close();//销毁loading
       }
     })
     .catch((error) => {
       console.log(error);
       isLoading.value = false; // 数据加载完成，隐藏加载状态
-      loadingInstance.close(); //销毁loading
+      loadingInstance.close();//销毁loading
     });
 };
 //查询是否关注
@@ -505,8 +416,8 @@ const getWhetherFollow = () => {
   // 显示全局加载指示器
   const loadingInstance = ElLoading.service({
     lock: true,
-    text: "Loading",
-    background: "rgba(0, 0, 0, 0.7)",
+    text: 'Loading',
+    background: 'rgba(0, 0, 0, 0.7)',
   });
   let param = {
     followUid: owner,
@@ -521,12 +432,12 @@ const getWhetherFollow = () => {
           isShareSelected.value = false;
         }
         isLoading.value = false; // 数据加载完成，隐藏加载状态
-        loadingInstance.close(); //销毁loading
+        loadingInstance.close();//销毁loading
       }
     })
     .catch((error) => {
       isLoading.value = false; // 数据加载完成，隐藏加载状态
-      loadingInstance.close(); //销毁loading
+      loadingInstance.close();//销毁loading
     });
 };
 //查询直播间详情
@@ -716,7 +627,7 @@ const utf8ArrayToString = (array) => {
 //WebRTC协议播放
 let art = shallowRef(null);
 let artplayerConfig = ref();
-const initArtplayer = ({ playLink, onReady }) => {
+const initArtplayer = (playLink) => {
   if (art.value) {
     art.value.destroy();
   }
@@ -773,8 +684,9 @@ const initArtplayer = ({ playLink, onReady }) => {
 
   art.value.on("ready", () => {
     //竖屏左右两边虚化
-    onReady();
     drawVideoFramesToCanvas(art.value); //实现原理是拿到视频播放的图像 把它当作背景图虚化
+    // console.log('10类型和11类型是否执行这里',playLink);
+    
   });
   playLink && art.value.switchUrl(playLink); //切换播放url
 };
@@ -859,18 +771,16 @@ onUnmounted(() => {
 const isShowrule = ref(false);
 const clickLuckybag = () => {
   let param = {
-    key: "activity_desc",
-  };
+    key:'activity_desc',
+  }
   const needToken = true; // 根据实际需要设置是否需要token
-  getConfValueByKeyList(param, needToken)
-    .then((res) => {
-      console.log("福袋规则返回数据", res);
-      document.querySelector(
-        ".LuckyBagRuleModal .LuckyBagRule .rule_content"
-      ).innerHTML = res.data;
-      isShowrule.value = true;
-    })
-    .catch((error) => {});
+  getConfValueByKeyList(param,needToken).then(res => {
+    console.log('福袋规则返回数据',res);
+    document.querySelector('.LuckyBagRuleModal .LuckyBagRule .rule_content').innerHTML = res.data
+    isShowrule.value = true
+  }).catch((error) => {
+
+  })
 
   // isShowrule.value = true
   // 设置活动规则=接口返回的数据
@@ -901,12 +811,12 @@ const fdCloseBtn = (type) => {
   // getRedPacketListPort();//获取红包接口
 };
 //待领取红包点击查询是否中奖
-const isWinOrNot = ref(false);
-const individualRedpacketData = ref({}); //保存单独红包的数据-请求是否中奖
+const isWinOrNot = ref(false)
+const individualRedpacketData = ref({});//保存单独红包的数据-请求是否中奖
 const winOrNot = (item) => {
-  isWinOrNot.value = true; //显示打开红包特效
+  isWinOrNot.value = true//显示打开红包特效
   individualRedpacketData.value = item;
-  initLottieAnimations(); //显示待开起json特效
+  initLottieAnimations();//显示待开起json特效
 };
 //时间戳转成月日
 const formatTimestampToMonthDay = (timestamp) => {
@@ -953,54 +863,49 @@ const iskaiqibuttRansao_hou = ref(false);
 const startRansao = () => {
   isWinOrNot.value = false; //隐藏待开启的特效
   iskaiqibuttRansao.value = true; //打开红包燃烧的特效
-  getRedPacketType(); //查询是否中奖
+  getRedPacketType();//查询是否中奖
   setTimeout(() => {
     iskaiqibuttRansao.value = false; //关闭燃烧的特效
     iskaiqibuttRansao_hou.value = true; //显示是否中奖状态
   }, 1400);
 };
 //点击待开启红包按钮=调用是否中奖接口
-const redPacketMessage = ref({}); //是否中奖接口数据
+const redPacketMessage = ref({});//是否中奖接口数据
 const getRedPacketType = () => {
-  console.log("获取对应红包数据id", individualRedpacketData.value);
+  console.log('获取对应红包数据id',individualRedpacketData.value);
   // return
   let param = {
-    activityId: individualRedpacketData.value.id,
-  };
+    activityId:individualRedpacketData.value.id,
+  }
   const needToken = true; // 根据实际需要设置是否需要token
   //获取红包是否中奖接口
-  getRedPacketWinOrNot(param, needToken)
-    .then((res) => {
-      //amount:金额  getCode：领取代码  drawStatus：中奖状态
-      //drawStatus 中奖状态 true 为中奖
-      //status: 0.未领取,1.已领取,2.已兑换,3.已取消
-      // console.log('点击领取红包',res);
-      if (res.code == 200) {
-        redPacketMessage.value = {
-          title: individualRedpacketData.value.title, //红包标题
-          amount: res.data.data.amount, //红包金额
-          bagName: individualRedpacketData.value.bagName, //红包类型
-          doingBegin: formatTimestampToMonthDay(
-            individualRedpacketData.value.doingBegin
-          ), // 格式化后的开始时间
-          doingEnd: formatTimestampToMonthDay(
-            individualRedpacketData.value.doingEnd
-          ), // 格式化后的结束时间
-        };
-        console.log("点击待领取红包拿到数据存起来", redPacketMessage.value);
-        //领取成功 把红包数据对应的id里面的status改为1 为领取成功
-        myRedPacketArray.forEach((packet) => {
-          if (packet.id === individualRedpacketData.value.id) {
-            packet.status = 1;
-          }
-        });
-      } else {
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+  getRedPacketWinOrNot(param,needToken).then(res => {
+    //amount:金额  getCode：领取代码  drawStatus：中奖状态
+    //drawStatus 中奖状态 true 为中奖
+    //status: 0.未领取,1.已领取,2.已兑换,3.已取消
+    // console.log('点击领取红包',res);
+    if(res.code == 200){
+      redPacketMessage.value = {
+        title:individualRedpacketData.value.title,//红包标题
+        amount:res.data.data.amount,//红包金额
+        bagName:individualRedpacketData.value.bagName,//红包类型
+        doingBegin: formatTimestampToMonthDay(individualRedpacketData.value.doingBegin), // 格式化后的开始时间
+        doingEnd: formatTimestampToMonthDay(individualRedpacketData.value.doingEnd) // 格式化后的结束时间
+      } 
+      console.log('点击待领取红包拿到数据存起来',redPacketMessage.value);
+      //领取成功 把红包数据对应的id里面的status改为1 为领取成功
+      myRedPacketArray.forEach(packet => {
+        if (packet.id === individualRedpacketData.value.id) {
+          packet.status = 1;
+        }
+      });
+    }else{
+
+    }
+  }).catch(error => {
+    console.log(error)
+  })
+}
 //监听设备是PC还是移动端，小于800的话device=mobile是移动端，否则device=desktop
 const store = useAppStoreHook();
 
@@ -1011,7 +916,7 @@ const handleVisibilityChange = () => {
 //生成一个0到max之间的随机整数。
 const getRandomNumber = (max) => {
   return Math.floor(Math.random() * max);
-};
+}
 //生成一个-200到200之间的随机整数（通过生成0到400之间的随机数，然后减去200）。
 const updateNumber = () => {
   const change = getRandomNumber(401) - 200;
@@ -1021,10 +926,20 @@ const updateNumber = () => {
   } else if (currentNumber.value > 10000) {
     currentNumber.value = 10000;
   }
-};
+}
+//判断是否需要多条视频循环播放
+const playVideo = (playObj) => {
+  console.log('播放连接', playObj)
+  // 判断是否为列表
+  if(playObj instanceof Array){
+    globalVideo.playList(playObj)
+  }else{
+    globalVideo.play(playObj)
+  }
+}
 //右侧ref元素，确保渲染完成
 const layoutMain = ref(null);
-onMounted(async () => {
+onMounted(async() => {
   //随机数
   currentNumber.value = getRandomNumber(10001);
   setInterval(updateNumber, 3000);
@@ -1044,306 +959,96 @@ onMounted(async () => {
   isCollapsed.value = false;
   await nextTick(); // 确保 DOM 已完全更新
   // const layoutMain = document.querySelector(".layout-Main");
-  if (layoutMain.value) {
-    // 确保 layoutMain 存在
+  if (layoutMain.value) { // 确保 layoutMain 存在
     if (isCollapsed.value == false) {
-      layoutMain.style.paddingLeft = "112px";
-    } else {
-      layoutMain.style.paddingLeft = "268px";
+      layoutMain.style.paddingLeft = '112px';
+    }else{
+      layoutMain.style.paddingLeft = '268px';
     }
-  } else {
+  }else{
+
   }
   getWhetherFollow(); //查询是否关注
   getDetails(); //查询直播间详情
+
+  // 获取直播｜｜视频，房间的url&token
   let result = await toogleVideo();
-  console.log(result);
-    let { url, token } = result.data;
-  if (typeList == 2) {
-    let playLink = url + "#" + token;
-    artplayerConfig.value = {
-      isLive: true, //直播模式隐藏进度条和播放时间
-      type: "webrtc",
-      customType: {
-        webrtc: function playWebRTC(video, url, art) {
-          if (art.webrtc) art.webrtc.disconnect();
-          const [playUrl, token] = url.split("#");
-          //视频订阅
-          const client = new Room();
-          // console.log('视频订阅类型',client);
-          //加入房间
-          client.on(
-            RoomEvent.TrackSubscribed,
-            (track, publication, participant) => {
-              console.log("[ 查看tv是什么类型2 ] >", track.kind);
-              // if (track.kind === "video" || track.kind === "voice") {audio
-              if (track.kind === "video") {
-                track.attach(video);
-              }
-            }
-          );
-          //获取聊天记录
-          client.on(RoomEvent.DataReceived, (message) => {
-            const utf8Array = utf8ArrayToString(message);
-            // 将字符串数据解析为 JavaScript 对象
-            const dataObject = JSON.parse(utf8Array);
-            console.log("转成对象了", dataObject);
-            const tokenuid = getToken();
-            //消息类型处理 只显示其他用户评论的消息，用户本身发送评论的消息不显示，需要在发送按钮单独处理显示
-            if (
-              dataObject.first == 10 &&
-              dataObject.data.uid !== tokenuid.uid
-            ) {
-              // 新的聊天数据拼接到旧数据后面
-              messageList.value = [
-                ...messageList.value,
-                {
-                  uid: dataObject.data.uid,
-                  dataName: dataObject.data.data,
-                  first: dataObject.first,
-                },
-              ];
-              //实时显示评论消息到弹幕
-              art.plugins.artplayerPluginDanmuku.emit({
-                text: dataObject.data.data,
-                time: 0,
-                color: "#fff",
-                size: 25,
-                border: false,
-              });
-            } else if (dataObject.first == 400) {
-              // entroomMessageList.value = dataObject.data.data
-              // entroomMessageList.value = [
-              entroomMessageList.value = {
-                uid: dataObject.data.uid,
-                enterLeaveDataName: "进入直播间",
-                first: dataObject.first,
-              };
-              // ];
-              console.log("[ 进入直播间数据 ] >", entroomMessageList.value);
-            }
-            console.log("[ 聊天最后的数据 ] >", messageList.value);
-          });
-
-          client.connect(playUrl, token);
-          art.webrtc = client;
-          // debugger
-          // 销毁时断开连接
-          art.on("destroy", () => {
-            if (art.webrtc) {
-              art.webrtc.disconnect();
-              art.webrtc = null;
-            }
-          });
-        },
-      },
-      video: {
-        url: playLink, // 将 WebRTC 流的 URL 设置到 video.url 中
-      },
-    };
-    initArtplayer({ playLink });
-  } else {
-    const client = new Room();
-    // console.log('视频订阅类型',client);
-    //加入房间
-    client.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
-      console.log("[ 查看tv是什么类型2 ] >", track.kind);
-      // if (track.kind === "video" || track.kind === "voice") {audio
-      if (track.kind === "video") {
-        track.attach(video);
-      }
-    });
-    //获取聊天记录
-    client.on(RoomEvent.DataReceived, (message) => {
-      const utf8Array = utf8ArrayToString(message);
-      // 将字符串数据解析为 JavaScript 对象
-      const dataObject = JSON.parse(utf8Array);
-      console.log("转成对象了", dataObject);
-      const tokenuid = getToken();
-      //消息类型处理 只显示其他用户评论的消息，用户本身发送评论的消息不显示，需要在发送按钮单独处理显示
-      if (dataObject.first == 10 && dataObject.data.uid !== tokenuid.uid) {
-        // 新的聊天数据拼接到旧数据后面
-        messageList.value = [
-          ...messageList.value,
-          {
-            uid: dataObject.data.uid,
-            dataName: dataObject.data.data,
-            first: dataObject.first,
-          },
-        ];
-        //实时显示评论消息到弹幕
-        art.plugins.artplayerPluginDanmuku.emit({
-          text: dataObject.data.data,
-          time: 0,
-          color: "#fff",
-          size: 25,
-          border: false,
-        });
-      } else if (dataObject.first == 400) {
-        // entroomMessageList.value = dataObject.data.data
-        // entroomMessageList.value = [
-        entroomMessageList.value = {
+  let { url, token } = result.data;
+  globalVideo = new CustomVideoPlayer(".artplayer-zbj");
+  const client = new Room();
+  
+  // 处理视频流
+  client.on(RoomEvent.TrackSubscribed, (track) => {
+    if (track.kind === "video") {
+      playVideo(track);
+      //竖屏左右两边虚化
+      drawVideoFramesToCanvas(globalVideo.art);
+    }
+  });
+  // TOTO 处理其他逻辑订阅=>>聊天
+  client.on(RoomEvent.DataReceived, (message) => {
+    const utf8Array = utf8ArrayToString(message);
+    // 将字符串数据解析为 JavaScript 对象
+    const dataObject = JSON.parse(utf8Array);
+    console.log("10和11类型转成对象了=公共方法", dataObject);
+    const tokenuid = getToken();
+    //消息类型处理 只显示其他用户评论的消息，用户本身发送评论的消息不显示，需要在发送按钮单独处理显示
+    if (dataObject.first == 10 && dataObject.data.uid !== tokenuid.uid) {
+      // 新的聊天数据拼接到旧数据后面
+      messageList.value = [
+        ...messageList.value,
+        {
           uid: dataObject.data.uid,
-          enterLeaveDataName: "进入直播间",
+          dataName: dataObject.data.data,
           first: dataObject.first,
-        };
-        // ];
-        console.log("[ 进入直播间数据 ] >", entroomMessageList.value);
-      }
-      console.log("[ 聊天最后的数据 ] >", messageList.value);
-    });
-console.log(url, token)
-    client.connect(url, token);
-    getVoiceTvListType().then((res) => {
-      let startTime = 0;
-      if (typeList == 10 || typeList == 11) {
-        let durTotle = res.data.reduce((pre, item) => {
-          return pre + item.dur;
-        }, 0);
-        let timed = Date.now() - res.data[0].playTime;
-        let m = Math.ceil((timed % (durTotle * 1000)) / 1000);
-        let url = res.data[0].url;
-        res.data.reduce((pre, item) => {
-          let timeTotle = pre + item.dur;
-          if (timeTotle > m && startTime == 0) {
-            startTime = m - pre;
-          }
-          return timeTotle;
-        }, 0);
-        // console.log(timeTotle)
-        //播放完计算url播放下一个
-        artplayerConfig.value = {
-          url: url,
-          isLive: true,
-          muted: true,
-          autoplay: true,
-          setting: true,
-          loop: true,
-          customType: {
-        webrtc: function playWebRTC(video, url, art) {
-          console.log(123)
-          if (art.webrtc) art.webrtc.disconnect();
-          const [playUrl, token] = url.split("#");
-          //视频订阅
-          const client = new Room();
-          // console.log('视频订阅类型',client);
-          //加入房间
-          client.on(
-            RoomEvent.TrackSubscribed,
-            (track, publication, participant) => {
-              console.log("[ 查看tv是什么类型2 ] >", track.kind);
-              // if (track.kind === "video" || track.kind === "voice") {audio
-              if (track.kind === "video") {
-                track.attach(video);
-              }
-            }
-          );
-          //获取聊天记录
-          client.on(RoomEvent.DataReceived, (message) => {
-            const utf8Array = utf8ArrayToString(message);
-            // 将字符串数据解析为 JavaScript 对象
-            const dataObject = JSON.parse(utf8Array);
-            console.log("转成对象了", dataObject);
-            const tokenuid = getToken();
-            //消息类型处理 只显示其他用户评论的消息，用户本身发送评论的消息不显示，需要在发送按钮单独处理显示
-            if (
-              dataObject.first == 10 &&
-              dataObject.data.uid !== tokenuid.uid
-            ) {
-              // 新的聊天数据拼接到旧数据后面
-              messageList.value = [
-                ...messageList.value,
-                {
-                  uid: dataObject.data.uid,
-                  dataName: dataObject.data.data,
-                  first: dataObject.first,
-                },
-              ];
-              //实时显示评论消息到弹幕
-              art.plugins.artplayerPluginDanmuku.emit({
-                text: dataObject.data.data,
-                time: 0,
-                color: "#fff",
-                size: 25,
-                border: false,
-              });
-            } else if (dataObject.first == 400) {
-              // entroomMessageList.value = dataObject.data.data
-              // entroomMessageList.value = [
-              entroomMessageList.value = {
-                uid: dataObject.data.uid,
-                enterLeaveDataName: "进入直播间",
-                first: dataObject.first,
-              };
-              // ];
-              console.log("[ 进入直播间数据 ] >", entroomMessageList.value);
-            }
-            console.log("[ 聊天最后的数据 ] >", messageList.value);
-          });
-
-          client.connect(playUrl, token);
-          art.webrtc = client;
-          // debugger
-          // 销毁时断开连接
-          art.on("destroy", () => {
-            if (art.webrtc) {
-              art.webrtc.disconnect();
-              art.webrtc = null;
-            }
-          });
         },
-      },
-          // customType: {
-          //   m3u8: function playm3u8(video, url, art) {},
-          // },
-        };
-      } else if (typeList == 100) {
-        if (res.data.length > 0) {
-          let url = res.data[0].url;
-          artplayerConfig.value = {
-            autoplay: true,
-            url: url,
-            setting: false,
-            muted: true,
-            type: url.indexOf("m3u8") != -1 ? "m3u8" : "",
-            // customType: {
-            //   m3u8: function playm3u8(video, url, art) {},
-            // },
-          };
-        } else {
-          artplayerConfig.value = null;
-        }
-      }
-      artplayerConfig.value &&
-        initArtplayer({
-          onReady() {
-            art.value.seek = startTime;
-          },
-        });
-    });
+      ];
+      //实时显示评论消息到弹幕
+      globalVideo.art.plugins.artplayerPluginDanmuku.emit({
+        text: dataObject.data.data,
+        time: 0,
+        color: "#fff",
+        size: 25,
+        border: false,
+      });
+    } else if (dataObject.first == 400) {
+      // entroomMessageList.value = dataObject.data.data
+      // entroomMessageList.value = [
+      entroomMessageList.value = {
+        uid: dataObject.data.uid,
+        enterLeaveDataName: "进入直播间",
+        first: dataObject.first,
+      };
+      // ];
+      console.log("[ 10和11类型进入直播间数据=公共方法 ] >", entroomMessageList.value);
+    }
+    console.log("[ 10和11类型聊天最后的数据=公共方法 ] >", messageList.value);
+  });
+  window.art = globalVideo.art
+
+  client.connect(url, token);
+  // 开始播放视频.不等于webrtc直播流的类型，走这个判断比如（10类型，11类型，100类型或者flv类型）
+  if(typeList != 2){
+    let res = await getVoiceTvListType()
+    playVideo(res.data)
   }
 
   // 监听某某用户进入直播间uid
-  watch(
-    () => entroomMessageList.value.uid,
-    () => {
-      if (entroomMessageList.value) {
-        nextTick(() => {
-          document.querySelector(".ent-roomuid").classList.add("slide-up");
-        });
-      }
+  watch(() => entroomMessageList.value.uid, () => {
+    if (entroomMessageList.value) {
+      nextTick(() => {
+        document.querySelector('.ent-roomuid').classList.add('slide-up');
+      });
     }
-  );
+  });
   // 监听某某用户进入直播间enterLeaveDataName
-  watch(
-    () => entroomMessageList.value.enterLeaveDataName,
-    () => {
-      if (entroomMessageList.value) {
-        nextTick(() => {
-          document.querySelector(".ent-roomname").classList.add("slide-up");
-        });
-      }
+  watch(() => entroomMessageList.value.enterLeaveDataName, () => {
+    if (entroomMessageList.value) {
+      nextTick(() => {
+        document.querySelector('.ent-roomname').classList.add('slide-up');
+      });
     }
-  );
+  });
   getRedPacketListPort(); //获取红包接口
 });
 onBeforeUnmount(() => {
@@ -1367,7 +1072,7 @@ onUpdated(() => {
 // });
 </script>
 <style lang="scss" scoped>
-.loading-container {
+.loading-container{
   position: relative;
   width: 100%;
   height: 100%;

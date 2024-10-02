@@ -164,7 +164,7 @@ const fetchSlides = async ( pageSize=6) => {
 
 // 组件挂载时加载第一页数据
 onMounted(() => {
-  fetchSlides(12);
+  fetchSlides(6);
 });
 
 let slideToPrev=()=>{
@@ -187,6 +187,7 @@ const onSlideChange = (swiper) => {
 };
 watch(() => props.dayIndex, (newValue, oldValue) => {
     currentPage.value=1
+    console.log(123)
     slides.value=[]
     fetchSlides( 12);
 });

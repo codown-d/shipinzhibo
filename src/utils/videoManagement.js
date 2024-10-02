@@ -1,7 +1,7 @@
 /**
  * 视频播放列表管理器类
  */
-class VideoPlaylistManager {
+export default class VideoPlaylistManager {
   /**
    * 构造函数
    * @param {Array} videoList 视频列表

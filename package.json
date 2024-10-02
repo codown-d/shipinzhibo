@@ -13,6 +13,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
     "@fingerprintjs/fingerprintjs": "^4.4.3",
+    "@types/mockjs": "^1.0.10",
     "amfe-flexible": "^2.2.1",
     "artplayer": "^5.1.6",
     "artplayer-plugin-danmuku": "^5.1.4",
@@ -21,6 +22,7 @@
     "clipboard": "^2.0.11",
     "element-plus": "^2.7.7",
     "emoji-mart-vue-fast": "^15.0.2",
+    "flv.js": "^1.6.2",
     "hls.js": "^1.5.13",
     "livekit-client": "^2.3.2",
     "lodash-es": "^4.17.21",
@@ -34,8 +36,10 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",
+    "mockjs": "link:mockjs",
     "postcss-pxtorem": "^6.1.0",
     "sass": "^1.77.8",
-    "vite": "^5.3.1"
+    "vite": "^5.3.1",
+    "vite-plugin-mock": "^3.0.2"
   }
 }
