@@ -35,9 +35,12 @@ importers:
       clipboard:
         specifier: ^2.0.11
         version: 2.0.11
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
       element-plus:
-        specifier: ^2.7.7
-        version: 2.7.7(vue@3.4.31)
+        specifier: ^2.8.4
+        version: 2.8.4(vue@3.4.31)
       emoji-mart-vue-fast:
         specifier: ^15.0.2
         version: 15.0.2(vue@3.4.31)
@@ -71,6 +74,12 @@ importers:
       vue:
         specifier: ^3.4.29
         version: 3.4.31
+      vue-at:
+        specifier: 3.0.0-alpha.2
+        version: 3.0.0-alpha.2(vue@3.4.31)
+      vue-mention:
+        specifier: ^1.1.0
+        version: 1.1.0(v-tooltip@2.1.3(vue@3.4.31))(vue@3.4.31)
       vue-router:
         specifier: ^4.4.0
         version: 4.4.0(vue@3.4.31)
@@ -511,8 +520,8 @@ packages:
   csstype@3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
 
-  dayjs@1.11.11:
-    resolution: {integrity: sha512-okzr3f11N6WuqYtZSvm+F776mB41wRZMhKP+hc34YdW+KmtYYK9iqvHSwo2k9FEH3fhGXvOPV6yz2IcSrfRUDg==}
+  dayjs@1.11.13:
+    resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
   debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
@@ -545,8 +554,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  element-plus@2.7.7:
-    resolution: {integrity: sha512-7ucUiDAxevyBE8JbXBTe9ofHhS047VmWMLoksE45zZ08XSnhnyG7WUuk3gmDbAklfVMHedb9sEV3OovPUWt+Sw==}
+  element-plus@2.8.4:
+    resolution: {integrity: sha512-ZlVAdUOoJliv4kW3ntWnnSHMT+u/Os7mXJjk2xzOlqNeHaI2/ozlF+R58ZCEak8ZnDi6+5A2viWEYRsq64IuiA==}
     peerDependencies:
       vue: ^3.2.0
 
@@ -794,6 +803,10 @@ packages:
       typescript:
         optional: true
 
+  popper.js@1.16.1:
+    resolution: {integrity: sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==}
+    deprecated: You can find the new Popper v2 at @popperjs/core, this package is dedicated to the legacy v1
+
   postcss-pxtorem@6.1.0:
     resolution: {integrity: sha512-ROODSNci9ADal3zUcPHOF/K83TiCgNSPXQFSbwyPHNV8ioHIE4SaC+FPOufd8jsr5jV2uIz29v1Uqy1c4ov42g==}
     peerDependencies:
@@ -870,6 +883,9 @@ packages:
     resolution: {integrity: sha512-VbQLQXC04io6AoAjIUWuZwW4MSYozkcP9KjLdrsG/00Q/yiwvhz9RQyt0nHXV10hi9NVnDNy1/wv7Dzq1lkOCQ==}
     engines: {node: '>= 4.7.0'}
 
+  textarea-caret@3.1.0:
+    resolution: {integrity: sha512-cXAvzO9pP5CGa6NKx0WYHl+8CHKZs8byMkt3PCJBCmq2a34YA9pO1NrQET5pzeqnBjBdToF5No4rrmkDUgQC2Q==}
+
   tiny-emitter@2.1.0:
     resolution: {integrity: sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==}
 
@@ -897,6 +913,9 @@ packages:
   utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
+
+  v-tooltip@2.1.3:
+    resolution: {integrity: sha512-xXngyxLQTOx/yUEy50thb8te7Qo4XU6h4LZB6cvEfVd9mnysUxLEoYwGWDdqR+l69liKsy3IPkdYff3J1gAJ5w==}
 
   vite-plugin-mock@3.0.2:
     resolution: {integrity: sha512-bD//HvkTygGmk+LsIAdf0jGNlCv4iWv0kZlH9UEgWT6QYoUwfjQAE4SKxHRw2tfLgVhbPQVv/+X3YlNWvueGUA==}
@@ -934,6 +953,12 @@ packages:
       terser:
         optional: true
 
+  vue-at@3.0.0-alpha.2:
+    resolution: {integrity: sha512-ybFUA4SMxxG9WDkZczjMARu2Q8NeixRbzAk4izu9bUiXdDhDcYqyTDCU6X82SlW6/Dq4NZfw4zdpdKkoAkXdgw==}
+    engines: {node: '>= 14.x'}
+    peerDependencies:
+      vue: 3.x
+
   vue-demi@0.14.8:
     resolution: {integrity: sha512-Uuqnk9YE9SsWeReYqK2alDI5YzciATE0r2SkA6iMAtuXvNTMNACJLJEXNXaEy94ECuBe4Sk6RzRU80kjdbIo1Q==}
     engines: {node: '>=12'}
@@ -944,6 +969,17 @@ packages:
     peerDependenciesMeta:
       '@vue/composition-api':
         optional: true
+
+  vue-mention@1.1.0:
+    resolution: {integrity: sha512-yuFewv8i70qIL5HWdi9UHdwXAxeis1RR/FN00GQ0P7LJeqkh8YD9CWIjnD2owO1yLjgFol7t9uvax3rsl+oigg==}
+    peerDependencies:
+      v-tooltip: ^2.0.0
+      vue: ^2.6.0
+
+  vue-resize@1.0.1:
+    resolution: {integrity: sha512-z5M7lJs0QluJnaoMFTIeGx6dIkYxOwHThlZDeQnWZBizKblb99GSejPnK37ZbNE/rVwDcYcHY+Io+AxdpY952w==}
+    peerDependencies:
+      vue: ^2.6.0
 
   vue-router@4.4.0:
     resolution: {integrity: sha512-HB+t2p611aIZraV2aPSRNXf0Z/oLZFrlygJm+sZbdJaW6lcFqEDQwnzUBXn+DApw+/QzDU/I9TeWx9izEjTmsA==}
@@ -1320,7 +1356,7 @@ snapshots:
 
   csstype@3.1.3: {}
 
-  dayjs@1.11.11: {}
+  dayjs@1.11.13: {}
 
   debug@2.6.9:
     dependencies:
@@ -1342,7 +1378,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  element-plus@2.7.7(vue@3.4.31):
+  element-plus@2.8.4(vue@3.4.31):
     dependencies:
       '@ctrl/tinycolor': 3.6.1
       '@element-plus/icons-vue': 2.3.1(vue@3.4.31)
@@ -1352,7 +1388,7 @@ snapshots:
       '@types/lodash-es': 4.17.12
       '@vueuse/core': 9.13.0(vue@3.4.31)
       async-validator: 4.2.5
-      dayjs: 1.11.11
+      dayjs: 1.11.13
       escape-html: 1.0.3
       lodash: 4.17.21
       lodash-es: 4.17.21
@@ -1595,6 +1631,8 @@ snapshots:
       vue: 3.4.31
       vue-demi: 0.14.8(vue@3.4.31)
 
+  popper.js@1.16.1: {}
+
   postcss-pxtorem@6.1.0(postcss@8.4.39):
     dependencies:
       postcss: 8.4.39
@@ -1686,6 +1724,8 @@ snapshots:
 
   swiper@11.1.14: {}
 
+  textarea-caret@3.1.0: {}
+
   tiny-emitter@2.1.0: {}
 
   to-fast-properties@2.0.0: {}
@@ -1705,6 +1745,15 @@ snapshots:
   unpipe@1.0.0: {}
 
   utils-merge@1.0.1: {}
+
+  v-tooltip@2.1.3(vue@3.4.31):
+    dependencies:
+      '@babel/runtime': 7.25.6
+      lodash: 4.17.21
+      popper.js: 1.16.1
+      vue-resize: 1.0.1(vue@3.4.31)
+    transitivePeerDependencies:
+      - vue
 
   vite-plugin-mock@3.0.2(esbuild@0.21.5)(mockjs@1.1.0)(vite@5.3.3(sass@1.77.8)):
     dependencies:
@@ -1730,8 +1779,24 @@ snapshots:
       fsevents: 2.3.3
       sass: 1.77.8
 
+  vue-at@3.0.0-alpha.2(vue@3.4.31):
+    dependencies:
+      textarea-caret: 3.1.0
+      vue: 3.4.31
+
   vue-demi@0.14.8(vue@3.4.31):
     dependencies:
+      vue: 3.4.31
+
+  vue-mention@1.1.0(v-tooltip@2.1.3(vue@3.4.31))(vue@3.4.31):
+    dependencies:
+      textarea-caret: 3.1.0
+      v-tooltip: 2.1.3(vue@3.4.31)
+      vue: 3.4.31
+
+  vue-resize@1.0.1(vue@3.4.31):
+    dependencies:
+      '@babel/runtime': 7.25.6
       vue: 3.4.31
 
   vue-router@4.4.0(vue@3.4.31):

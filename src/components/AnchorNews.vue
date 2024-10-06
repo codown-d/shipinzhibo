@@ -2,25 +2,15 @@
   <el-card class="anchor-news">
     <div class="postInfo dflex">
       <div class="userAvatarWarper">
-        <div
-          class="UserAvatar__dMFkv"
-          aria-haspopup="dialog"
-          aria-expanded="false"
-          aria-controls="mantine-fau73ij36-dropdown"
-          id="mantine-fau73ij36-target"
-          style="width: 50px; height: 50px"
-        >
-          <a
-            class="avatarLink__u0gFS"
-            target="_blank"
-            rel="https://apic.douyucdn.cn/upload/avatar_v3/202212/d4f61c2ee2c1493186c1c47bdc10377e_middle.jpg"
-            href="/member/qy70JRJZRdXG/main/news"
-            ><img
+        <div class="UserAvatar" style="width: 50px; height: 50px">
+          <a class="avatarLink" target="_blank">
+            <img
               class="image-avatar"
-              src="https://apic.douyucdn.cn/upload/avatar_v3/202212/d4f61c2ee2c1493186c1c47bdc10377e_middle.jpg"
+              :src="props.publisher.avatar"
               alt=""
-              style="width: 50px; height: 50px" /><i class="mask__ZmHBK"></i
-          ></a>
+              style="width: 50px; height: 50px"
+            />
+          </a>
         </div>
       </div>
       <div class="mainContent margin-left">
@@ -28,38 +18,29 @@
           <div class="userCardHeaderLeft">
             <div class="allInfo">
               <div class="margin-bottom-xs">
-                <span
-                  aria-haspopup="dialog"
-                  aria-expanded="false"
-                  aria-controls="mantine-hef6gb119-dropdown"
-                  id="mantine-hef6gb119-target"
-                  class=""
-                  ><a
-                    class="noline__xDTs-"
-                    target="_blank"
-                    rel="一条小团团OvO"
-                    href="/member/qy70JRJZRdXG/main/news"
-                    ><span class="normal ma">一条小团团OvO</span></a
-                  ></span
-                ><span class="liveStatus"></span>
+                <span>
+                  <a class="noline" target="_blank">
+                    <span class="normal">{{ props.publisher.nickname }}</span>
+                  </a>
+                </span>
+                <span class="liveStatus"></span>
               </div>
               <div class="timeAndAddressInfo">
-                <a
-                  class="PostTime"
-                  href="/feed/2459229762367869760?origin=1&amp;groupId=2493219"
-                  >01月27日 13:33</a
-                ><span class="postCardAt__FsV8q"
-                  ><a
-                    class="linkyuba"
-                    target="_blank"
-                    href="/discussion/2493219/posts"
-                    >一条小团团OvO</a
-                  ></span
-                >
+                <a class="PostTime margin-right-xs">{{ props.ctime }}</a>
+                <span class="postCardAt">
+                  <a>{{ props.publisher.nickname }}</a>
+                </span>
               </div>
             </div>
           </div>
-          <div class="userCardHeaderRight">
+          <div class="userCardHeaderRight dflex">
+            <el-button
+              :size="'small'"
+              class="followBtn margin-right-xs"
+              round
+              v-if="props.follow_status !== 1"
+              >关注</el-button
+            >
             <el-dropdown placement="bottom">
               <el-icon><ArrowDown /></el-icon>
               <template #dropdown>
@@ -77,19 +58,7 @@
         </header>
         <section class="postCardBody margin-top">
           <div class="holderSection" style="--last-holder-size: 0px">
-            <span
-              >小猪仔们，你们好！我又要停播了，距离上一次停播才过去一年，真的很抱歉，我不能陪你们过年了，总之就是有点身不由己，我感觉事情到我这就变得复杂了很多，所以我要停播了，最近这一个多月，我经历了很多有趣的事，还有很多不好的事，感觉自己又成长了很多，如果可以的话，我想把它们变成段子，讲给你们听，提前祝大家新年快乐，不要太想我，我会想你们的。
-              我不在的这段时间，会让奶团接管直播间，让他们陪陪你们。</span
-            ><a
-              class="topic__hQvKu specNode"
-              target="_blank"
-              data-contenteditable="false"
-              data-node-type="topic"
-              data-text='[topic src="205695"]#祝大家新年快乐[/topic]'
-              title="祝大家新年快乐"
-              href="/thema/205695"
-              >#祝大家新年快乐</a
-            >
+            <span>{{ props.text }}</span>
           </div>
         </section>
         <section>
@@ -108,7 +77,12 @@
                 </template>
                 <template #default>
                   <div class="reaction dflex" style="">
-                    <div class="reactionItem dflex" style="flex-direction: column; margin: 0 10px;" v-for="(item,index) in reactionList" :key="index">
+                    <div
+                      class="reactionItem dflex"
+                      style="flex-direction: column; margin: 0 10px"
+                      v-for="(item, index) in reactionList"
+                      :key="index"
+                    >
                       <img
                         class="image emotionIcon"
                         :src="item.url"
@@ -121,115 +95,225 @@
                 </template>
               </el-popover>
             </span>
-            <span class="commentBtn dflex"
-              ><img
+            <span class="commentBtn dflex" @click="replyVisible = !replyVisible"
+              >
+              <img
                 src="/images/emio2.svg"
                 class="margin-right-xs"
                 alt="My Icon"
                 width="20"
-              /><span>2683</span></span
-            ><span class="like dflex"
-              ><img
-                src="/images/emio3.svg"
+              />
+              <span>{{ props.comment_count }}</span>
+            </span>
+            <span class="dflex" :class="props.liked ? 'like' : ''">
+              <img
+                :src="props.liked ? '/images/emio3.svg' : '/images/emio5.svg'"
                 class="margin-right-xs"
                 alt="My Icon"
-                width="20" /><span style="color: rgb(255, 93, 103)">6906</span
-              ><i id="likeref__poeEo"></i></span
-            ><span class="dflex" style="padding-right: 80px"
+                width="20"
+              />
+              <span>{{ props.like_count }}</span>
+            </span>
+            <span
+              class="dflex"
+              @click="reactionFn()"
+              style="padding-right: 80px"
               ><img
                 src="/images/emio4.svg"
                 class="margin-right-xs"
                 alt="My Icon"
                 width="20"
-              /><span>4</span></span
-            >
+              />
+              <span>{{ props.relay_count }}</span>
+            </span>
           </div>
         </section>
       </div>
     </div>
+   <reply-comment v-if="replyVisible"></reply-comment>
+    <el-dialog v-model="dialogVisible" title="转发动态" width="600">
+      <chat-message
+        shadow="never"
+        class="new-msg forward"
+        :body-style="{
+          padding: 0,
+        }"
+      >
+        <div
+          class="pos-a"
+          style="bottom: 0; padding: 10px; width: 100%; box-sizing: border-box"
+        >
+          <div
+            class="dflex"
+            style="background-color: #eee; align-items: flex-start"
+          >
+            <img
+              class="margin-right-xs"
+              :src="props.publisher.avatar"
+              style="width: 84px; height: 84px"
+            />
+            <div style="flex: 1; width: 0">
+              <p class="contentSection-name margin-top-xs">
+                {{ props.publisher.nickname }}
+              </p>
+              <p class="contentSection margin-top-xs">
+                {{ props.text }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </chat-message>
+    </el-dialog>
   </el-card>
 </template>
 
 <script setup>
-import { ref, defineEmits, onMounted } from "vue";
-import { getPopularAnchor } from "@/api/chat";
+import { ref, defineProps, onMounted } from "vue";
+import { getPopularAnchor, getReplyAnchorNews } from "@/api/chat";
+import ChatMessage from "./ChatMessage.vue";
+import ReplyComment from "./ReplyComment.vue";
+const props = defineProps({
+  group: {
+    type: Object,
+    default: { group_id: 0, group_name: "" },
+  },
+  publisher: {
+    type: Object,
+    default: {
+      uid: 0,
+      nickname: "",
+      avatar: "",
+      room_id: 0,
+    },
+  },
+  ctime: {
+    type: String,
+    default: "",
+  },
+  follow_status: {
+    type: Number,
+    default: 1,
+  },
+  comment_count: {
+    type: Number,
+    default: 0,
+  },
+  liked: {
+    type: Boolean,
+    default: false,
+  },
+  like_count: {
+    type: Number,
+    default: 0,
+  },
+  relay_count: {
+    type: Number,
+    default: 0,
+  },
+  text: {
+    type: String,
+    default: "",
+  },
+});
+const dialogVisible = ref(false);
+const replyVisible = ref(false);
 let list = ref([]);
+let comment = ref([]);
 let headerRightList = ref([
   {
     label: "收藏",
     value: "key_1",
   },
   {
-    label: "取消关注",
+    label: props.liked ? "取消关注" : "关注",
     value: "key_2",
   },
-  {
-    label: "举报",
-    value: "key_3",
-  },
-  {
-    label: "分享",
-    value: "key_4",
-  },
+  // {
+  //   label: "举报",
+  //   value: "key_3",
+  // },
+  // {
+  //   label: "分享",
+  //   value: "key_4",
+  // },
 ]);
 let reactionList = ref([
   {
     label: "点赞",
     value: "key_1",
-    url:'https://c-yuba.douyucdn.cn/yubares/2024/06/24/7c72e4d78ebd97382d3f26e5a19811e8/7c72e4d78ebd97382d3f26e5a19811e8.gif'
+    url: "https://c-yuba.douyucdn.cn/yubares/2024/06/24/7c72e4d78ebd97382d3f26e5a19811e8/7c72e4d78ebd97382d3f26e5a19811e8.gif",
   },
   {
     label: "小丑",
     value: "key_2",
-    url:'https://c-yuba.douyucdn.cn/yubares/2024/06/24/db9196946fade857487d59be68b36267/db9196946fade857487d59be68b36267.gif'
+    url: "https://c-yuba.douyucdn.cn/yubares/2024/06/24/db9196946fade857487d59be68b36267/db9196946fade857487d59be68b36267.gif",
   },
   {
     label: "6",
     value: "key_3",
-    url:'https://c-yuba.douyucdn.cn/yubavod/admin/common/acf317da9ad35fa498442d704d98d5d3.gif'
+    url: "https://c-yuba.douyucdn.cn/yubavod/admin/common/acf317da9ad35fa498442d704d98d5d3.gif",
   },
   {
     label: "星星眼",
     value: "key_4",
-    url:'https://c-yuba.douyucdn.cn/yubares/2024/06/24/83fdf1c0f5cbe371f27e802561c77e20/83fdf1c0f5cbe371f27e802561c77e20.gif'
+    url: "https://c-yuba.douyucdn.cn/yubares/2024/06/24/83fdf1c0f5cbe371f27e802561c77e20/83fdf1c0f5cbe371f27e802561c77e20.gif",
   },
   {
     label: "已阅",
     value: "key_4",
-    url:'https://c-yuba.douyucdn.cn/yubares/2024/06/24/5fb9b6546d750d4de5a8ef871371c582/5fb9b6546d750d4de5a8ef871371c582.gif'
+    url: "https://c-yuba.douyucdn.cn/yubares/2024/06/24/5fb9b6546d750d4de5a8ef871371c582/5fb9b6546d750d4de5a8ef871371c582.gif",
   },
   {
     label: "快哭了",
     value: "key_4",
-    url:'https://c-yuba.douyucdn.cn/yubares/2024/06/24/d93d137765536483b8b6c1fdd0539474/d93d137765536483b8b6c1fdd0539474.gif'
+    url: "https://c-yuba.douyucdn.cn/yubares/2024/06/24/d93d137765536483b8b6c1fdd0539474/d93d137765536483b8b6c1fdd0539474.gif",
   },
-  
+
   {
     label: "生气",
     value: "key_4",
-    url:'https://c-yuba.douyucdn.cn/yubares/2024/06/24/44ab7dd05057009730686e0a9b779e08/44ab7dd05057009730686e0a9b779e08.gif'
+    url: "https://c-yuba.douyucdn.cn/yubares/2024/06/24/44ab7dd05057009730686e0a9b779e08/44ab7dd05057009730686e0a9b779e08.gif",
   },
-  
+
   {
     label: "问号",
     value: "key_4",
-    url:'https://c-yuba.douyucdn.cn/yubares/2024/06/24/a9521ac5aff85035d247362b18e7ae76/a9521ac5aff85035d247362b18e7ae76.gif'
+    url: "https://c-yuba.douyucdn.cn/yubares/2024/06/24/a9521ac5aff85035d247362b18e7ae76/a9521ac5aff85035d247362b18e7ae76.gif",
   },
   {
     label: "吃瓜",
     value: "key_4",
-    url:'https://c-yuba.douyucdn.cn/yubares/2024/06/24/922b1ee01ed1b330cf7aa37e2cf28e74/922b1ee01ed1b330cf7aa37e2cf28e74.gif'
+    url: "https://c-yuba.douyucdn.cn/yubares/2024/06/24/922b1ee01ed1b330cf7aa37e2cf28e74/922b1ee01ed1b330cf7aa37e2cf28e74.gif",
   },
 ]);
-
+let forwardItem = ref();
+let reactionFn = (item) => {
+  forwardItem.value = item;
+  dialogVisible.value = true;
+};
 onMounted(() => {
   getPopularAnchor().then((res) => {
-    console.log(res.data);
     list.value = res.data.list;
+  });
+
+  getReplyAnchorNews().then((res) => {
+    comment.value = res.data.list;
   });
 });
 </script>
 
+<style lang="scss">
+.new-msg {
+  border: 0px !important;
+}
+.forward {
+  .el-mention {
+    .el-textarea__inner {
+      padding-bottom: 130px;
+    }
+  }
+}
+</style>
 <style lang="scss" scoped>
 .anchor-news {
   .image-avatar {
@@ -267,6 +351,30 @@ onMounted(() => {
   .specNode {
     color: #3e7abc;
   }
-
+  .followBtn {
+  }
+  .like {
+    color: rgb(255, 93, 103);
+  }
+  .contentSection-name {
+    color: #333;
+    font-style: normal;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .contentSection {
+    display: -webkit-box;
+    font-weight: 400;
+    line-height: 20px;
+    position: relative;
+    width: 100%;
+    word-break: break-all;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    color: grey;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 </style>
