@@ -15,8 +15,8 @@
           target="_blank"
           :title="item.title"
           :href="item.href"
-          ><span class="topic clamp">#{{ item.title }}</span
-          ><span class="hot">{{ item.num }}万</span>
+          ><span class="topic clamp">#{{ item.subjectName }}</span
+          ><span class="hot">等{{ item.joinNum }}人参与</span>
         </a>
       </div>
     </div>
@@ -29,9 +29,9 @@ import { getHotTopic } from "@/api/chat";
 let list = ref([]);
 
 onMounted(() => {
-  getHotTopic().then((res) => {
+  getHotTopic({ pageNum: 1, pageSize: 20 }).then((res) => {
     console.log(res.data);
-    list.value = res.data.list;
+    list.value = res.data;
   });
 });
 </script>
@@ -50,14 +50,13 @@ onMounted(() => {
     padding: 4px 0px;
     justify-content: space-between;
   }
-  .topic{
+  .topic {
     width: 0;
     flex: 1;
   }
-  .hot{
-    width:70px;
+  .hot {
+    width: 70px;
     text-align: right;
-
   }
 }
 </style>

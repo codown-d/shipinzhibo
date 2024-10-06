@@ -158,7 +158,12 @@ let postSendMsgFn = () => {
 };
 onMounted(() => {
   getMention().then((res) => {
-    options.value = res.data.list;
+    options.value = res.data.map(item=>{
+      return {
+        value: item.subjectName,
+        label: item.subjectName,
+      } 
+    });
   });
 });
 </script>
