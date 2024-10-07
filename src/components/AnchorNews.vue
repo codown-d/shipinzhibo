@@ -95,8 +95,10 @@
                 </template>
               </el-popover>
             </span>
-            <span class="commentBtn dflex" @click="replyVisible = !replyVisible"
-              >
+            <span
+              class="commentBtn dflex"
+              @click="replyVisible = !replyVisible"
+            >
               <img
                 src="/images/emio2.svg"
                 class="margin-right-xs"
@@ -130,7 +132,7 @@
         </section>
       </div>
     </div>
-   <reply-comment v-if="replyVisible"></reply-comment>
+    <reply-comment v-if="replyVisible"></reply-comment>
     <el-dialog v-model="dialogVisible" title="转发动态" width="600">
       <chat-message
         shadow="never"
@@ -218,7 +220,6 @@ const props = defineProps({
 const dialogVisible = ref(false);
 const replyVisible = ref(false);
 let list = ref([]);
-let comment = ref([]);
 let headerRightList = ref([
   {
     label: "收藏",
@@ -294,10 +295,6 @@ let reactionFn = (item) => {
 onMounted(() => {
   getPopularAnchor().then((res) => {
     list.value = res.data.list;
-  });
-
-  getReplyAnchorNews().then((res) => {
-    comment.value = res.data.list;
   });
 });
 </script>

@@ -15,9 +15,7 @@
           :href="item.href"
           >
           <img :src="item.avatar" alt="" class="anchor-img"/>
-          <span class="hot clamp"
-            >{{ item.name }}</span
-          >
+          <span class="hot clamp">{{ item.name }}</span>
         </a>
       </div>
     </div>

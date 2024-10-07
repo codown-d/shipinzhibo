@@ -56,11 +56,18 @@
       :comment_replies="item.comment_replies"
       :key="item.uid"
     ></comment>
+    <div
+      class="dflex"
+      style="justify-content: center; font-size: 16px; margin-top: 8px"
+    >
+      查看全部{{ commentCount }}条回复
+      <el-icon><ArrowRightBold /></el-icon>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, defineProps, onMounted,computed  } from "vue";
+import { ref, defineProps, onMounted, computed } from "vue";
 import Emoji from "./Emoji.vue";
 import { getReplyAnchorNews } from "@/api/chat";
 import Comment from "./Comment.vue";
@@ -108,7 +115,9 @@ const props = defineProps({
     default: "",
   },
 });
+
 let comment = ref([]);
+let commentCount = ref(0);
 const msg = ref("");
 let emojiOnChange = (val, item) => {
   msg.value = `${msg.value}${val}`;
@@ -119,10 +128,10 @@ const limitTreeData = (nodes, limit = 5) => {
 
   const traverse = (node) => {
     if (count >= limit) return;
-    
+
     result.push({
       ...node,
-      sub_replies: []
+      sub_replies: [],
     });
     count++;
 
@@ -131,7 +140,7 @@ const limitTreeData = (nodes, limit = 5) => {
       for (let child of node.sub_replies) {
         if (count >= limit || childrenCount >= 2) break;
         result[result.length - 1].sub_replies.push({
-          ...child
+          ...child,
         });
         count++;
         childrenCount++;
@@ -151,6 +160,7 @@ const limitedTreeData = computed(() => limitTreeData(comment.value));
 onMounted(() => {
   getReplyAnchorNews().then((res) => {
     comment.value = res.data.list;
+    commentCount.value = res.data.count;
   });
 });
 </script>
