@@ -1,6 +1,7 @@
 <template>
-  <div class="margin-top-sm" v-for="item in list">
+  <div class="margin-top-sm" v-for="(item, index) in list">
     <anchor-news
+      :key="index"
       :publisher="item.publisher"
       :text="item.text"
       :comment_count="item.comment_count"
@@ -8,6 +9,7 @@
       :relay_count="item.relay_count"
       :liked="item.liked"
       :follow_status="item.follow_status"
+      :dynamicMsgId="item.dynamicMsgId"
       :ctime="item.ctime"
     ></anchor-news>
   </div>
@@ -15,12 +17,36 @@
 <script setup>
 import AnchorNews from "@/components/AnchorNews.vue";
 import { onMounted, ref } from "vue";
-import { getAnchorNews } from "@/api/chat";
+import { getAnchorNews, getUserInfo } from "@/api/chat";
 let list = ref([]);
 onMounted(() => {
-  getAnchorNews().then((res) => {
-    console.log(123, res.data);
-    list.value = res.data.list;
+  getAnchorNews().then(async (res) => {
+    let arr = [];
+    for (let i = 0; i < res.data.list.length; i++) {
+      let item = res.data.list[i];
+      let result = await getUserInfo({
+        queryUid: item.userDynamic.uid,
+        visitor: false,
+      });
+      console.log(item, result);
+      arr.push({
+        publisher: {
+          nickname: result.nick,
+          avatar: result.avatar,
+          uid: result.uid,
+        },
+        text: item.userDynamic.comtent,
+        comment_count: item.userDynamic.commentNum,
+        like_count: item.userDynamic.likeNum,
+        relay_count: 0,
+        liked: item.userDynamic.hasLike,
+        follow_status: 123,
+        dynamicMsgId: item.userDynamic.dynamicMsgId,
+        ctime: item.userDynamic.createTime
+      });
+    }
+    console.log(123, arr);
+    list.value = arr;
   });
 });
 </script>

@@ -6,7 +6,7 @@
           <a class="avatarLink" target="_blank">
             <img
               class="image-avatar"
-              :src="props.publisher.avatar"
+              :src="dataInfo.publisher.avatar"
               alt=""
               style="width: 50px; height: 50px"
             />
@@ -20,15 +20,17 @@
               <div class="margin-bottom-xs">
                 <span>
                   <a class="noline" target="_blank">
-                    <span class="normal">{{ props.publisher.nickname }}</span>
+                    <span class="normal">{{
+                      dataInfo.publisher.nickname
+                    }}</span>
                   </a>
                 </span>
                 <span class="liveStatus"></span>
               </div>
               <div class="timeAndAddressInfo">
-                <a class="PostTime margin-right-xs">{{ props.ctime }}</a>
+                <a class="PostTime margin-right-xs">{{ formatTime(dataInfo.ctime) }}</a>
                 <span class="postCardAt">
-                  <a>{{ props.publisher.nickname }}</a>
+                  <a>{{ dataInfo.publisher.nickname }}</a>
                 </span>
               </div>
             </div>
@@ -38,11 +40,13 @@
               :size="'small'"
               class="followBtn margin-right-xs"
               round
-              v-if="props.follow_status !== 1"
+              v-if="dataInfo.follow_status !== 1"
               >关注</el-button
             >
             <el-dropdown placement="bottom">
-              <el-icon><ArrowDown /></el-icon>
+              <el-icon>
+                <ArrowDown />
+              </el-icon>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item
@@ -58,12 +62,12 @@
         </header>
         <section class="postCardBody margin-top">
           <div class="holderSection" style="--last-holder-size: 0px">
-            <span>{{ props.text }}</span>
+            <span>{{ dataInfo.text }}</span>
           </div>
         </section>
         <section>
           <div class="bottomAction dflex margin-top">
-            <span>
+            <span v-if="false">
               <el-popover width="auto" placement="top">
                 <template #reference>
                   <div class="dflex">
@@ -105,16 +109,22 @@
                 alt="My Icon"
                 width="20"
               />
-              <span>{{ props.comment_count }}</span>
+              <span>{{ dataInfo.comment_count }}</span>
             </span>
-            <span class="dflex" :class="props.liked ? 'like' : ''">
+            <span
+              class="dflex"
+              :class="dataInfo.liked ? 'like' : ''"
+              @click="getLikeFn(dataInfo)"
+            >
               <img
-                :src="props.liked ? '/images/emio3.svg' : '/images/emio5.svg'"
+                :src="
+                  dataInfo.liked ? '/images/emio3.svg' : '/images/emio5.svg'
+                "
                 class="margin-right-xs"
                 alt="My Icon"
                 width="20"
               />
-              <span>{{ props.like_count }}</span>
+              <span>{{ dataInfo.like_count }}</span>
             </span>
             <span
               class="dflex"
@@ -126,7 +136,7 @@
                 alt="My Icon"
                 width="20"
               />
-              <span>{{ props.relay_count }}</span>
+              <span>{{ dataInfo.relay_count }}</span>
             </span>
           </div>
         </section>
@@ -151,15 +161,15 @@
           >
             <img
               class="margin-right-xs"
-              :src="props.publisher.avatar"
+              :src="dataInfo.publisher.avatar"
               style="width: 84px; height: 84px"
             />
             <div style="flex: 1; width: 0">
               <p class="contentSection-name margin-top-xs">
-                {{ props.publisher.nickname }}
+                {{ dataInfo.publisher.nickname }}
               </p>
               <p class="contentSection margin-top-xs">
-                {{ props.text }}
+                {{ dataInfo.text }}
               </p>
             </div>
           </div>
@@ -170,8 +180,9 @@
 </template>
 
 <script setup>
-import { ref, defineProps, onMounted } from "vue";
-import { getPopularAnchor, getReplyAnchorNews } from "@/api/chat";
+import { formatTime } from "@/utils/lib";
+import { ref, defineProps, onMounted, watch } from "vue";
+import { getPopularAnchor, getLike, getUnlike } from "@/api/chat";
 import ChatMessage from "./ChatMessage.vue";
 import ReplyComment from "./ReplyComment.vue";
 const props = defineProps({
@@ -189,7 +200,7 @@ const props = defineProps({
     },
   },
   ctime: {
-    type: String,
+    type: Number,
     default: "",
   },
   follow_status: {
@@ -216,17 +227,23 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  dynamicMsgId: {
+    type: Number,
+    default: 0,
+  },
 });
+let dataInfo = ref({ ...props });
+console.log(dataInfo)
 const dialogVisible = ref(false);
 const replyVisible = ref(false);
 let list = ref([]);
 let headerRightList = ref([
+  // {
+  //   label: "收藏",
+  //   value: "key_1",
+  // },
   {
-    label: "收藏",
-    value: "key_1",
-  },
-  {
-    label: props.liked ? "取消关注" : "关注",
+    label: dataInfo.liked ? "取消关注" : "关注",
     value: "key_2",
   },
   // {
@@ -287,11 +304,38 @@ let reactionList = ref([
     url: "https://c-yuba.douyucdn.cn/yubares/2024/06/24/922b1ee01ed1b330cf7aa37e2cf28e74/922b1ee01ed1b330cf7aa37e2cf28e74.gif",
   },
 ]);
+
 let forwardItem = ref();
+let getLikeFn = (item) => {
+  !dataInfo.value.liked
+    ? getLike({ dynamicId: item.dynamicMsgId }).then((res) => {
+        if (res.code == 0) {
+          dataInfo.value.liked = true;
+          dataInfo.value.like_count = dataInfo.value.like_count + 1;
+          ElMessage({
+            message: "点赞成功",
+            type: "success",
+          });
+        }
+      })
+    : getUnlike({ dynamicId: item.dynamicMsgId }).then((res) => {
+        if (res.code == 0) {
+          dataInfo.value.liked = false;
+          dataInfo.value.like_count = dataInfo.value.like_count - 1;
+          ElMessage({
+            message: "取消点赞成功",
+            type: "success",
+          });
+        }
+      });
+};
 let reactionFn = (item) => {
   forwardItem.value = item;
   dialogVisible.value = true;
 };
+watch(props, (newValue, oldValue) => {
+  dataInfo.value=newValue
+},{ deep: true });
 onMounted(() => {
   getPopularAnchor().then((res) => {
     list.value = res.data.list;
@@ -303,6 +347,7 @@ onMounted(() => {
 .new-msg {
   border: 0px !important;
 }
+
 .forward {
   .el-mention {
     .el-textarea__inner {
@@ -316,49 +361,62 @@ onMounted(() => {
   .image-avatar {
     border-radius: 50%;
   }
+
   .postInfo {
     align-items: flex-start;
   }
+
   .userCardHeader {
     justify-content: space-between;
     align-items: flex-start;
   }
+
   .normal {
     font-weight: 600;
     font-size: 19px;
   }
+
   .timeAndAddressInfo {
     font-size: 16px;
   }
+
   .PostTime {
     color: #999;
   }
+
   .linkyuba {
     color: #3e7abc;
     margin-left: 10px;
   }
+
   .bottomAction {
     font-size: 16px;
     align-items: center;
     justify-content: space-between;
   }
+
   .holderSection {
     font-size: 20px;
   }
+
   .specNode {
     color: #3e7abc;
   }
+
   .followBtn {
   }
+
   .like {
     color: rgb(255, 93, 103);
   }
+
   .contentSection-name {
     color: #333;
     font-style: normal;
     font-weight: 500;
     margin-bottom: 6px;
   }
+
   .contentSection {
     display: -webkit-box;
     font-weight: 400;
@@ -372,6 +430,10 @@ onMounted(() => {
     color: grey;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  .mainContent{
+    width: 0;
+    flex: 1;
   }
 }
 </style>

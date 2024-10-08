@@ -9,6 +9,7 @@
         :whole="true"
         :options="options"
         placeholder="分享这一刻的想法…"
+        @select="onSelect"
         :autosize="{ minRows: 3 }"
       />
       <slot></slot>
@@ -16,7 +17,7 @@
     <div>
       <div class="dflex margin-top-lg" style="justify-content: space-between">
         <div class="dflex">
-          <div class="dflex margin-right">
+          <div class="dflex margin-right" v-if="false">
             <el-popover placement="bottom" trigger="click" width="auto">
               <template #reference>
                 <span class="dflex">
@@ -62,9 +63,9 @@
           </div>
         </div>
         <div class="dflex" aria-hidden="false">
-          <el-dropdown
+          <el-dropdown 
             @command="handleCommand"
-            v-if="$attrs.messageType !== 'reply'"
+            v-if="false"
           >
             <div class="dflex" style="font-size: 18px" aria-hidden="false">
               {{ dropdownVal.title
@@ -96,7 +97,7 @@
 <script setup>
 import { ref, nextTick, onMounted } from "vue";
 import Emoji from "./Emoji.vue";
-import { postSendMsg } from "@/api/chat";
+import { getDynamicAdd } from "@/api/chat";
 import { ElMessage, ElMention } from "element-plus";
 import { getMention } from "@/api/chat";
 const checked = ref(false);
@@ -131,6 +132,12 @@ const dropdownMenuList = ref([
     title: "私密",
   },
 ]);
+let subjectId = ref('')
+let onSelect = (option, prefix)=>{
+  console.log(option, prefix)
+  subjectId.value=option.subjectId
+
+}
 const dropdownVal = ref(dropdownMenuList.value[0]);
 const handleCommand = (command) => {
   dropdownVal.value = command;
@@ -144,9 +151,9 @@ let addMention = async () => {
   msg.value = `${msg.value}#`;
 };
 let postSendMsgFn = () => {
-  postSendMsg({
-    content: msg.value,
-    type: dropdownVal.value.value,
+  getDynamicAdd({
+    comtent: msg.value,
+    subjectId: subjectId.value,
   }).then((res) => {
     if (res.code == 200) {
       ElMessage({
@@ -160,6 +167,7 @@ onMounted(() => {
   getMention().then((res) => {
     options.value = res.data.map(item=>{
       return {
+        subjectId:item.subjectId,
         value: item.subjectName,
         label: item.subjectName,
       } 

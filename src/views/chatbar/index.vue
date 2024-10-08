@@ -13,7 +13,7 @@
           <i class="menuIcon-icon-wdgz"></i>
           我的关注
         </router-link>
-        <router-link class="menuItem__ztLTC" :class="{ active: selectedRoute === '/chatbar/talkaboutall' }" to="/chatbar/talkaboutall" @click="selectRoute('/chatbar/talkaboutall')">
+        <router-link v-if="false" class="menuItem__ztLTC" :class="{ active: selectedRoute === '/chatbar/talkaboutall' }" to="/chatbar/talkaboutall" @click="selectRoute('/chatbar/talkaboutall')">
           <i class="menuIcon-icon-qblb"></i>
           全部聊吧
         </router-link>
@@ -21,7 +21,7 @@
           <i class="menuIcon-icon-rmtj"></i>
           热门推荐
         </router-link>
-        <router-link class="menuItem__ztLTC" :class="{ active: selectedRoute === '/chatbar/likedpass' }" to="/chatbar/likedpass" @click="selectRoute('/chatbar/likedpass')">
+        <router-link  v-if="false" class="menuItem__ztLTC" :class="{ active: selectedRoute === '/chatbar/likedpass' }" to="/chatbar/likedpass" @click="selectRoute('/chatbar/likedpass')">
           <i class="menuIcon-icon-wzgd"></i>
           我赞过的
         </router-link>
