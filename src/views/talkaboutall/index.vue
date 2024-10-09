@@ -22,31 +22,7 @@ let list = ref([]);
 onMounted(() => {
   getAnchorNews().then(async (res) => {
     let arr = [];
-    for (let i = 0; i < res.data.list.length; i++) {
-      let item = res.data.list[i];
-      let result = await getUserInfo({
-        queryUid: item.userDynamic.uid,
-        visitor: false,
-      });
-      console.log(item, result);
-      arr.push({
-        publisher: {
-          nickname: result.nick,
-          avatar: result.avatar,
-          uid: result.uid,
-        },
-        text: item.userDynamic.comtent,
-        comment_count: item.userDynamic.commentNum,
-        like_count: item.userDynamic.likeNum,
-        relay_count: 0,
-        liked: item.userDynamic.hasLike,
-        follow_status: 123,
-        dynamicMsgId: item.userDynamic.dynamicMsgId,
-        ctime: item.userDynamic.createTime
-      });
-    }
-    console.log(123, arr);
-    list.value = arr;
+    list.value = [];
   });
 });
 </script>

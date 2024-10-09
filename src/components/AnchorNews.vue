@@ -21,7 +21,7 @@
                 <span>
                   <a class="noline" target="_blank">
                     <span class="normal">{{
-                      dataInfo.publisher.nickname
+                      dataInfo.publisher.nick
                     }}</span>
                   </a>
                 </span>
@@ -30,7 +30,7 @@
               <div class="timeAndAddressInfo">
                 <a class="PostTime margin-right-xs">{{ formatTime(dataInfo.ctime) }}</a>
                 <span class="postCardAt">
-                  <a>{{ dataInfo.publisher.nickname }}</a>
+                  <a>{{ dataInfo.publisher.nick }}</a>
                 </span>
               </div>
             </div>
@@ -166,7 +166,7 @@
             />
             <div style="flex: 1; width: 0">
               <p class="contentSection-name margin-top-xs">
-                {{ dataInfo.publisher.nickname }}
+                {{ dataInfo.publisher.nick }}
               </p>
               <p class="contentSection margin-top-xs">
                 {{ dataInfo.text }}
@@ -194,7 +194,7 @@ const props = defineProps({
     type: Object,
     default: {
       uid: 0,
-      nickname: "",
+      nick: "",
       avatar: "",
       room_id: 0,
     },
@@ -233,7 +233,6 @@ const props = defineProps({
   },
 });
 let dataInfo = ref({ ...props });
-console.log(dataInfo)
 const dialogVisible = ref(false);
 const replyVisible = ref(false);
 let list = ref([]);

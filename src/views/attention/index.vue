@@ -27,6 +27,7 @@ onMounted(() => {
     pageNum: 1,
     pageSize: 20,
   }).then(async (res) => {
+    console.log(res)
     let arr = [];
     for (let i = 0; i < res.data.length; i++) {
       let item = res.data[i];

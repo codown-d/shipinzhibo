@@ -21,7 +21,7 @@
 import ChatMessage from "@/components/ChatMessage.vue";
 import AnchorNews from "@/components/AnchorNews.vue";
 import { onMounted, ref } from "vue";
-import { getDynamicPage ,getUserInfo} from "@/api/chat";
+import { getDynamicPage, getUserInfo } from "@/api/chat";
 let list = ref([]);
 onMounted(() => {
   getDynamicPage({
@@ -29,20 +29,13 @@ onMounted(() => {
     pageNum: 1,
     pageSize: 20,
   }).then(async (res) => {
-    let arr = [];
-    for (let i = 0; i < res.data.length; i++) {
-      let item = res.data[i];
-      let result = await getUserInfo({
-        queryUid: item.userDynamic.uid,
-        visitor: false,
-      });
-      console.log(item, result);
-      arr.push({
-        publisher: {
-          nickname: result.nick,
-          avatar: result.avatar,
-          uid: result.uid,
-        },
+    console.log(res.data)
+    list.value = res.data.map((item) => {
+      console.log(item.userDynamic.userInfo)
+      let userInfo=JSON.parse(item.userDynamic.userInfo||"{}")
+      console.log(userInfo)
+      return {
+        publisher: userInfo,
         text: item.userDynamic.comtent,
         comment_count: item.userDynamic.commentNum,
         like_count: item.userDynamic.likeNum,
@@ -51,9 +44,8 @@ onMounted(() => {
         follow_status: 123,
         dynamicMsgId: item.userDynamic.dynamicMsgId,
         ctime: item.userDynamic.createTime,
-      });
-    }
-    list.value = arr;
+      };
+    });
   });
 });
 </script>

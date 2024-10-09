@@ -36,7 +36,7 @@
               </template>
             </el-popover>
           </div>
-          <div class="dflex  margin-right" v-if="false">
+          <div class="dflex  margin-right" >
             <img
               src="/images/img.svg"
               class="margin-right-xs"
