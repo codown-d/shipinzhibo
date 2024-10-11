@@ -11,12 +11,13 @@
         placeholder="分享这一刻的想法…"
         @select="onSelect"
         :autosize="{ minRows: 3 }"
-        :input-style="'padding-bottom:' + (height+20) + 'px;height:auto;box-sizing:content-box'"
+        :input-style="
+          'padding-bottom:' +
+          (height + 20) +
+          'px;height:auto;box-sizing:content-box'
+        "
       />
-      <div
-        ref="mentionContent"
-        class="pos-a mention-content"
-      >
+      <div ref="mentionContent" class="pos-a mention-content">
         <img :src="preview" alt="" width="60" height="60" v-if="preview" />
         <slot></slot>
       </div>
@@ -47,12 +48,12 @@
             <el-upload
               style="display: contents"
               :on-change="onChange"
+              action="/api/oss/upload"
               ref="upload"
               :show-file-list="false"
               :accept="'image/*'"
               :multiple="false"
               :limit="1"
-              :auto-upload="false"
             >
               <template #trigger>
                 <img
@@ -193,6 +194,7 @@ let postSendMsgFn = () => {
   getDynamicAdd({
     comtent: msg.value,
     subjectId: subjectId.value,
+    attachmentType: "1",
   }).then((res) => {
     if (res.code == 200) {
       ElMessage({

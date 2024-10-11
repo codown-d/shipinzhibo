@@ -39,4 +39,10 @@ export const postSendMsg = (data) => {
      return result.data
     }
   };
- 
+  export const getCommentPage = (params,needToken=true) => {
+    return http.request("get", "/api/user/dynamic/comment/page", {params},{needToken},);
+  };
+  export const getAnswerCommentPage = (params,needToken=true) => {
+    return http.request("get", "/api/user/dynamic/comment/answerComment/page", {params},{needToken},);
+  };
+

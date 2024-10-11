@@ -4,7 +4,7 @@
       <div class="avatarWrapper dflex">
         <img
           class="image"
-          src="https://apic.douyucdn.cn/upload/avanew/face/201707/21/20/378124a54007d5d0332953280233bb72_middle.jpg"
+          :src="userInfo.avatar"
           alt=""
           style="
             width: 34px;
@@ -43,7 +43,14 @@
         </div>
       </div>
     </div>
+    <CommentTree
+      v-for="node in treeData"
+      :key="node.id"
+      :node="node"
+      @load-node="loadNode"
+    />
     <comment
+      v-if="false"
       v-for="item in limitedTreeData"
       :avatar="item.avatar"
       :nick_name="item.nick_name"
@@ -58,6 +65,7 @@
     ></comment>
     <div
       class="dflex"
+      v-if="false"
       style="justify-content: center; font-size: 16px; margin-top: 8px"
     >
       查看全部{{ commentCount }}条回复
@@ -69,63 +77,58 @@
 <script setup>
 import { ref, defineProps, onMounted, computed } from "vue";
 import Emoji from "./Emoji.vue";
-import { getReplyAnchorNews } from "@/api/chat";
+import {
+  getReplyAnchorNews,
+  getCommentPage,
+  getAnswerCommentPage,
+} from "@/api/chat";
 import Comment from "./Comment.vue";
+import { getUserStorage } from "@/utils/auth";
+import CommentTree from "./CommentTree.vue";
 const checked = ref(false);
 const props = defineProps({
-  group: {
-    type: Object,
-    default: { group_id: 0, group_name: "" },
-  },
-  publisher: {
-    type: Object,
-    default: {
-      uid: 0,
-      nickname: "",
-      avatar: "",
-      room_id: 0,
-    },
-  },
-  ctime: {
-    type: String,
-    default: "",
-  },
-  follow_status: {
+  dynamicId: {
     type: Number,
-    default: 1,
-  },
-  comment_count: {
-    type: Number,
-    default: 0,
-  },
-  liked: {
-    type: Boolean,
-    default: false,
-  },
-  like_count: {
-    type: Number,
-    default: 0,
-  },
-  relay_count: {
-    type: Number,
-    default: 0,
-  },
-  text: {
-    type: String,
-    default: "",
+    required: true,
   },
 });
-
+let userInfo = ref(getUserStorage());
 let comment = ref([]);
 let commentCount = ref(0);
 const msg = ref("");
 let emojiOnChange = (val, item) => {
   msg.value = `${msg.value}${val}`;
 };
+const treeData = ref([]);
+const loadNode = (node, callback) => {
+  node.loading = true;
+  console.log(node)
+  getAnswerCommentPage({
+    dynamicId: node.dynamicId,
+    dynamicCommentId: node.dynamicCommentId,
+    pageNum: 1,
+    pageSize: 20,
+  }).then((res) => {
+    console.log(res.data)
+    node.children = res.data.map((item) => {
+      console.log(item);
+      return {
+        ...item,
+        loading: false,
+        children: [],
+        isLeaf:item.answerCommentCount==0,
+        userInfo: item.userInfo
+          ? JSON.parse(item.userInfo)
+          : { avatar: "", nick: "" },
+      };
+    });;
+    node.loading = false;
+    callback();
+  });
+};
 const limitTreeData = (nodes, limit = 5) => {
   let result = [];
   let count = 0;
-
   const traverse = (node) => {
     if (count >= limit) return;
 
@@ -158,9 +161,29 @@ const limitTreeData = (nodes, limit = 5) => {
 
 const limitedTreeData = computed(() => limitTreeData(comment.value));
 onMounted(() => {
-  getReplyAnchorNews().then((res) => {
-    comment.value = res.data.list;
-    commentCount.value = res.data.count;
+  // getReplyAnchorNews().then((res) => {
+  //   comment.value = res.data.list;
+  //   commentCount.value = res.data.count;
+  // });
+  getCommentPage({
+    dynamicId: props.dynamicId,
+    childPageNum: 1,
+    childPageSize: 20,
+    pageNum: 1,
+    pageSize: 20,
+  }).then((res) => {
+    treeData.value = res.data.map((item) => {
+      console.log(item);
+      return {
+        ...item,
+        loading: false,
+        children: [],
+        isLeaf:item.answerCommentCount==0,
+        userInfo: item.userInfo
+          ? JSON.parse(item.userInfo)
+          : { avatar: "", nick: "" },
+      };
+    });
   });
 });
 </script>
@@ -169,7 +192,6 @@ onMounted(() => {
 .new-msg {
   border: 0px !important;
 }
-
 </style>
 <style lang="scss" scoped>
 .anchor-news {

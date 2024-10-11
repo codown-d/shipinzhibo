@@ -101,7 +101,7 @@
             </span>
             <span
               class="commentBtn dflex"
-              @click="replyVisible = !replyVisible"
+              @click="showReply()"
             >
               <img
                 src="/images/emio2.svg"
@@ -142,7 +142,7 @@
         </section>
       </div>
     </div>
-    <reply-comment v-if="replyVisible"></reply-comment>
+    <reply-comment v-if="replyVisible" :dynamicId='dataInfo.dynamicMsgId' ></reply-comment>
     <el-dialog v-model="dialogVisible" title="转发动态" width="600">
       <chat-message
         shadow="never"
@@ -302,6 +302,10 @@ let reactionList = ref([
 ]);
 
 let forwardItem = ref();
+
+let showReply=(item)=>{
+  replyVisible.value = !replyVisible.value
+}
 let getLikeFn = (item) => {
   !dataInfo.value.liked
     ? getLike({ dynamicId: item.dynamicMsgId }).then((res) => {
