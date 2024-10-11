@@ -121,7 +121,7 @@ const loadNode = (node, callback) => {
           ? JSON.parse(item.userInfo)
           : { avatar: "", nick: "" },
       };
-    });;
+    });
     node.loading = false;
     callback();
   });
