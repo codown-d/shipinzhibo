@@ -1,7 +1,7 @@
 <template>
   <div>
     <chat-message></chat-message>
-    <div class="margin-top-sm" v-for="item in list">
+    <div class="margin-top-sm" v-for="(item,index) in list">
       <anchor-news
         :key="index"
         :publisher="item.publisher"
@@ -29,11 +29,8 @@ onMounted(() => {
     pageNum: 1,
     pageSize: 20,
   }).then(async (res) => {
-    console.log(res.data)
     list.value = res.data.map((item) => {
-      console.log(item.userDynamic.userInfo)
       let userInfo=JSON.parse(item.userDynamic.userInfo||"{}")
-      console.log(userInfo)
       return {
         publisher: userInfo,
         text: item.userDynamic.comtent,

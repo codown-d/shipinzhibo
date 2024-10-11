@@ -1,6 +1,7 @@
 <template>
-  <div class="margin-top-sm" v-for="item in list">
+  <div class="margin-top-sm" v-for="(item,index) in list">
     <anchor-news
+      :key="index"
       :publisher="item.publisher"
       :text="item.text"
       :comment_count="item.comment_count"

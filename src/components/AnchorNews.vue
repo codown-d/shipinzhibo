@@ -151,10 +151,7 @@
           padding: 0,
         }"
       >
-        <div
-          class="pos-a"
-          style="bottom: 0; padding: 10px; width: 100%; box-sizing: border-box"
-        >
+        <div>
           <div
             class="dflex"
             style="background-color: #eee; align-items: flex-start"
@@ -345,14 +342,6 @@ onMounted(() => {
 <style lang="scss">
 .new-msg {
   border: 0px !important;
-}
-
-.forward {
-  .el-mention {
-    .el-textarea__inner {
-      padding-bottom: 130px;
-    }
-  }
 }
 </style>
 <style lang="scss" scoped>

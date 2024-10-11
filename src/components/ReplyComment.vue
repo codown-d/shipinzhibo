@@ -169,13 +169,7 @@ onMounted(() => {
 .new-msg {
   border: 0px !important;
 }
-.forward {
-  .el-mention {
-    .el-textarea__inner {
-      padding-bottom: 130px;
-    }
-  }
-}
+
 </style>
 <style lang="scss" scoped>
 .anchor-news {

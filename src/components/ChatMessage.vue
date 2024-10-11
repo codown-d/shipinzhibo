@@ -11,8 +11,15 @@
         placeholder="分享这一刻的想法…"
         @select="onSelect"
         :autosize="{ minRows: 3 }"
+        :input-style="'padding-bottom:' + (height+20) + 'px;height:auto;box-sizing:content-box'"
       />
-      <slot></slot>
+      <div
+        ref="mentionContent"
+        class="pos-a mention-content"
+      >
+        <img :src="preview" alt="" width="60" height="60" v-if="preview" />
+        <slot></slot>
+      </div>
     </div>
     <div>
       <div class="dflex margin-top-lg" style="justify-content: space-between">
@@ -36,16 +43,32 @@
               </template>
             </el-popover>
           </div>
-          <div class="dflex  margin-right" >
-            <img
-              src="/images/img.svg"
-              class="margin-right-xs"
-              alt="My Icon"
-              width="20"
-            />图片
+          <div class="dflex margin-right">
+            <el-upload
+              style="display: contents"
+              :on-change="onChange"
+              ref="upload"
+              :show-file-list="false"
+              :accept="'image/*'"
+              :multiple="false"
+              :limit="1"
+              :auto-upload="false"
+            >
+              <template #trigger>
+                <img
+                  src="/images/img.svg"
+                  class="margin-right-xs"
+                  alt="My Icon"
+                  width="20"
+                />图片
+              </template>
+            </el-upload>
           </div>
-          <div class="dflex  margin-right" @click="addMention" 
-          v-if="$attrs.messageType !== 'reply'">
+          <div
+            class="dflex margin-right"
+            @click="addMention"
+            v-if="$attrs.messageType !== 'reply'"
+          >
             <img
               src="/images/huati.svg"
               class="margin-right-xs"
@@ -58,15 +81,15 @@
             @click="addMention"
             v-if="$attrs.messageType === 'reply'"
           >
-            <el-checkbox  
-            class="margin-right-xs" v-model="checked" label="同时转发" />
+            <el-checkbox
+              class="margin-right-xs"
+              v-model="checked"
+              label="同时转发"
+            />
           </div>
         </div>
         <div class="dflex" aria-hidden="false">
-          <el-dropdown 
-            @command="handleCommand"
-            v-if="false"
-          >
+          <el-dropdown @command="handleCommand" v-if="false">
             <div class="dflex" style="font-size: 18px" aria-hidden="false">
               {{ dropdownVal.title
               }}<el-icon class="margin-left">
@@ -100,11 +123,14 @@ import Emoji from "./Emoji.vue";
 import { getDynamicAdd } from "@/api/chat";
 import { ElMessage, ElMention } from "element-plus";
 import { getMention } from "@/api/chat";
+import { useResizeObserver } from "@/hook";
 const checked = ref(false);
 const mentionRef = ref(null);
 const options = ref([]);
 const msg = ref("");
 const props = defineProps(["actionType"]);
+const fileList = ref([]);
+const preview = ref(null);
 const dropdownMenuList = ref([
   {
     label: "公开",
@@ -132,15 +158,28 @@ const dropdownMenuList = ref([
     title: "私密",
   },
 ]);
-let subjectId = ref('')
-let onSelect = (option, prefix)=>{
-  console.log(option, prefix)
-  subjectId.value=option.subjectId
-
-}
+let subjectId = ref("");
+let onSelect = (option, prefix) => {
+  console.log(option, prefix);
+  subjectId.value = option.subjectId;
+};
+const mentionContent = ref(null);
+const { width, height } = useResizeObserver(mentionContent);
 const dropdownVal = ref(dropdownMenuList.value[0]);
 const handleCommand = (command) => {
   dropdownVal.value = command;
+};
+const beforeUpload = (file) => {
+  file["url"] = URL.createObjectURL(file.raw); // 创建临时URL
+  console.log(file);
+  fileList.value.push(file);
+  return false;
+};
+const onChange = (file) => {
+  file["url"] = URL.createObjectURL(file.raw); // 创建临时URL
+  console.log(file);
+  preview.value = file.url;
+  fileList.value.push(file);
 };
 let emojiOnChange = (val, item) => {
   msg.value = `${msg.value}${val}`;
@@ -165,17 +204,23 @@ let postSendMsgFn = () => {
 };
 onMounted(() => {
   getMention().then((res) => {
-    options.value = res.data.map(item=>{
+    options.value = res.data.map((item) => {
       return {
-        subjectId:item.subjectId,
+        subjectId: item.subjectId,
         value: item.subjectName,
         label: item.subjectName,
-      } 
+      };
     });
   });
 });
 </script>
 <style lang="scss" scoped>
 .chat-message {
+}
+.mention-content {
+  bottom: 0px;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
 }
 </style>
