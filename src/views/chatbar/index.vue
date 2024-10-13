@@ -13,18 +13,18 @@
           <i class="menuIcon-icon-wdgz"></i>
           我的关注
         </router-link>
-        <router-link v-if="false" class="menuItem__ztLTC" :class="{ active: selectedRoute === '/chatbar/talkaboutall' }" to="/chatbar/talkaboutall" @click="selectRoute('/chatbar/talkaboutall')">
+        <!-- <router-link class="menuItem__ztLTC" :class="{ active: selectedRoute === '/chatbar/talkaboutall' }" to="/chatbar/talkaboutall" @click="selectRoute('/chatbar/talkaboutall')">
           <i class="menuIcon-icon-qblb"></i>
           全部聊吧
-        </router-link>
+        </router-link> -->
         <router-link class="menuItem__ztLTC" :class="{ active: selectedRoute === '/chatbar/hotrecommendation' }" to="/chatbar/hotrecommendation" @click="selectRoute('/chatbar/hotrecommendation')">
           <i class="menuIcon-icon-rmtj"></i>
           热门推荐
         </router-link>
-        <router-link  v-if="false" class="menuItem__ztLTC" :class="{ active: selectedRoute === '/chatbar/likedpass' }" to="/chatbar/likedpass" @click="selectRoute('/chatbar/likedpass')">
+        <!-- <router-link class="menuItem__ztLTC" :class="{ active: selectedRoute === '/chatbar/likedpass' }" to="/chatbar/likedpass" @click="selectRoute('/chatbar/likedpass')">
           <i class="menuIcon-icon-wzgd"></i>
           我赞过的
-        </router-link>
+        </router-link> -->
       </div>
       <!-- 中间内容 -->
       <div class="content__CxYIq">
@@ -81,13 +81,13 @@ onMounted(()=>{
   // console.log('首次route',route.path);
   if (route.path === '/chatbar') {
     //首次进入页面也选中 全部聊吧选项
-    router.push('/chatbar/talkaboutall');
-    selectedRoute.value = '/chatbar/talkaboutall';
+    router.push('/chatbar/hotrecommendation');
+    selectedRoute.value = '/chatbar/hotrecommendation';
   }else {
     // selectedRoute.value = route.path;
     // 刷新页面重新选中 全部聊吧选项
-    router.push('/chatbar/talkaboutall');
-    selectedRoute.value = '/chatbar/talkaboutall';
+    router.push('/chatbar/hotrecommendation');
+    selectedRoute.value = '/chatbar/hotrecommendation';
   }
 });
 // watch(route, (newRoute) => {

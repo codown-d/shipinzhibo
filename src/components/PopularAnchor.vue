@@ -24,14 +24,14 @@
 
 <script setup>
 import { ref, defineEmits, onMounted } from "vue";
-import { getPopularAnchor } from "@/api/chat";
+// import { getPopularAnchor } from "@/api/chat";
 let list = ref([]);
 
 onMounted(() => {
-  getPopularAnchor().then((res) => {
-    console.log(res.data);
-    list.value = res.data.list;
-  });
+  // getPopularAnchor().then((res) => {
+  //   console.log(res.data);
+  //   list.value = res.data.list;
+  // });
 });
 </script>
 

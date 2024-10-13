@@ -1,7 +1,7 @@
 <template>
   <div class="search">
     <input class="input-text" type="text" v-model="text">
-    <el-icon class="search_icon" size="14px" color="#ccc" @click="searchContent">
+    <el-icon class="search_icon" size="14px" color="#000" @click="searchContent">
       <Search />
     </el-icon>
   </div>

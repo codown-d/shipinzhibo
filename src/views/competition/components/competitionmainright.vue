@@ -1,15 +1,16 @@
 <template>
   <div class="layout-boxnav">
-    <div class="layout-Module-head">
-      <div class="layout-Module-title">热门赛事</div>
-      <div class="date-selector">
-        <button class="date-btn" :class="{ 'active': currentIndex === index }" v-for="(dateStr, index) in dateBtns" @click="setActiveIndex(dateStr,index)">
-          {{ dateStr }}
-        </button>
+    <div v-show="isLiveinfull">
+      <div class="layout-Module-head">
+        <div class="layout-Module-title">热门赛事</div>
+        <div class="date-selector">
+          <button class="date-btn" :class="{ 'active': currentIndex === index }" v-for="(dateStr, index) in dateBtns" @click="setActiveIndex(dateStr,index)">
+            {{ dateStr }}
+          </button>
+        </div>
       </div>
+      <Swiper :dayIndex="currentIndex"></Swiper>
     </div>
-
-    <Swiper :dayIndex="currentIndex"></Swiper>
     <!-- 轮播图 mouseover鼠标移入 mouseout移出 @mouseout="auto"-->
     <div v-if="false" class="pos-r" style="height: 200px; padding: 0px 32px; margin-bottom: 20px;"  @mouseover="stop">
       <div class="swiper-container wh-full pos-r overflow-hidden">
@@ -64,7 +65,10 @@
         <img class="wh-full click-btn" src="../../../assets/images/right@2x.png" alt="" />
       </div>
   	</div>
-
+    <!-- 标签类型数据显示 -->
+    <div v-show="!isLiveinfull" :class="device ? '' : 'mobile_plate'" style="background-color: #fff;">
+      <Plate :tagList="SevenTagHotlsit" :headerTitle="isroomTag"></Plate>
+    </div>
     <!-- 赛事直播 -->
     <div :class="device ? '' : 'mobile_plate'" style="background-color: #fff;">
       <Plate :tagList="matchRoomList" :headerTitle="'赛事直播'"></Plate>
@@ -73,12 +77,20 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted,watchEffect,nextTick } from 'vue';
+import { ref, computed, onMounted, onUnmounted,watchEffect,nextTick,watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { debounce } from 'lodash-es';//防抖动
 import Plate from '@/components/Plate.vue';
+import { getBroadcastAll } from '@/api/types';//7大类型接口
 import Swiper from '@/components/Swiper.vue';
+import { useStorage } from "@/utils/lib";
 import { getLiveMatchList,getMatchRoomList } from '@/api/competition';
+let tagAct = JSON.parse(useStorage.get("tagAct") || "{}");
+const isLoading = ref(true); // 加载状态
+const props = defineProps({
+  firstOrderList: Object,//一级菜单的数据
+  selectedItem: Object,//二级菜单的数据
+});
 const today = new Date();
 //给到轮播图数据接口处理开始时间与结束时间
 const formatDate = (date, time) => {
@@ -99,22 +111,6 @@ const setActiveIndex = (dateStr,index) =>{
   // console.log('点击时间选中、index',index);
   getLiveMatchType(currentIndex.value,1);
 }
-//足球按钮数据
-// const ballBtns = ref([
-//   {
-//     namebtn:'换一批',
-//   },
-//   {
-//     namebtn:'直播中',
-//   },
-// ]);
-//换一批按钮点击下标
-// const ballIndex = ref(0);
-//换一批按钮
-// const ballActiveIndex = (itemd,index) =>{
-//   console.log('点击换一批按钮',index);
-//   ballIndex.value = index;
-// }
 
 //轮播图数据
 const router = useRouter();
@@ -159,12 +155,6 @@ const banner = ref([
 const current = ref(0);
 const animated = ref(true);
 let timer = null;
-// const preBtn = () =>{
-// 	return require(``)
-// }
-// const nextBtn = () =>{
-// 	return require(``)
-// }
 
 // 轮播图对应跳转路径
 const to = (rid,owner,type) => {
@@ -298,11 +288,43 @@ const getLiveMatchType = (index,pageNum) => {
     console.log(error)
   });
 }
-
+//7大类型不同的数据
+const SevenTagHotlsit = ref([]);//7大类型不同的数据
+const isLiveinfull = ref(!tagAct["tagId"]);//用于控制左侧菜单是全部直播选项 再显示对应的数据模块
+const isroomTag = ref(tagAct["roomTag"]);//用于显示不同的标题
+//根据监听不同类型 查询不同数据7大类型
+const getRecommendedTagtype = (tagId) =>{
+  const needToken = true;// 根据实际需要设置是否需要token
+  //type=1 推荐，type=2热门
+  getBroadcastAll({ tagId: tagId, pageNum: 1, pageSize: 20 },needToken).then((res) => {
+    
+    SevenTagHotlsit.value = res.data
+  })
+};
+// 监听 firstOrderList 的变化
+watch(() => props.firstOrderList, (newVal, oldVal) => {
+  console.log('右侧组件监听一级选中数据', newVal);
+  if (newVal.text == "全部直播") {
+    isLiveinfull.value = true;
+  }
+});
+// 监听 selectedItem 的变化
+watch(() => props.selectedItem, (newVal, oldVal) => {
+  console.log('右侧组件监听二级选中数据', newVal);
+  if (newVal) {
+    //选中二级把一级的状态全部直播隐藏
+    isLiveinfull.value = false;
+    isroomTag.value = newVal.roomTag;//标签不同的标题
+    //监听标签选中不同的获取对应的tagId去查询对应数据
+    getRecommendedTagtype(newVal.tagId)
+  }
+});
 onMounted(() => {
-  stop();
-  checkLodash();
+  // stop();
+  // checkLodash();
   dataCallAll();//查询全部数据
+  console.log('右侧组件获取左侧菜单选中的一级对象数据',props.firstOrderList);
+  console.log('右侧组件获取左侧菜单选中的二级对象数据',props.selectedItem);
 });
 
 onUnmounted(() => {

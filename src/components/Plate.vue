@@ -48,8 +48,8 @@ const goDetail = (rid, owner, type) => {
     >
       <div class="tag-name">{{ props.headerTitle }}</div>
       <div class="look-all">
-        <span class="look-text">查看更多</span>
-        <el-icon><ArrowRight /></el-icon>
+        <!-- <span class="look-text">查看更多</span> -->
+        <!-- <el-icon><ArrowRight /></el-icon> -->
       </div>
     </div>
     <!-- 直播页进来使用 || 赛事直播页面进来使用-->
@@ -62,7 +62,7 @@ const goDetail = (rid, owner, type) => {
       <div class="tag-name">{{ props.headerTitle }}</div>
       <span class="listRecommend-refresh">换一批</span>
     </div>
-    <div class="header" v-show="props.headerTitle == '全部直播'">
+    <div class="header" v-show="props.headerTitle == '全部直播' || props.headerTitle == '我的关注'">
       <div class="tag-name">{{ props.headerTitle }}</div>
     </div>
     <!-- 左侧菜单7大类型标签显示的标题 -->
@@ -137,7 +137,7 @@ const goDetail = (rid, owner, type) => {
           </div>
         </div>
       </template>
-      <div v-else class="room-item">
+      <div v-else class="room-noData">
         <el-empty description="暂无数据" />
       </div>
       <!-- <div class="room-item">
@@ -341,6 +341,9 @@ const goDetail = (rid, owner, type) => {
         }
       }
     }
+  }
+  .room-noData{
+    width: 100%;
   }
 }
 

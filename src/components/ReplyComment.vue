@@ -37,9 +37,9 @@
                 </div>
               </template>
             </el-popover>
-            <el-checkbox label="同时转发" v-model="checked" />
+            <!-- <el-checkbox label="同时转发" v-model="checked" /> -->
           </div>
-          <el-button type="primary"> 评论 </el-button>
+          <el-button type="primary" @click="reviewAdd"> 评论 </el-button>
         </div>
       </div>
     </div>
@@ -49,7 +49,7 @@
       :node="node"
       @load-node="loadNode"
     />
-    <comment
+    <!-- <comment
       v-if="false"
       v-for="item in limitedTreeData"
       :avatar="item.avatar"
@@ -62,7 +62,7 @@
       :sub_replies="item.sub_replies"
       :comment_replies="item.comment_replies"
       :key="item.uid"
-    ></comment>
+    ></comment> -->
     <div
       class="dflex"
       v-if="false"
@@ -78,13 +78,14 @@
 import { ref, defineProps, onMounted, computed } from "vue";
 import Emoji from "./Emoji.vue";
 import {
-  getReplyAnchorNews,
   getCommentPage,
   getAnswerCommentPage,
+  getReviewAdd,//评论
 } from "@/api/chat";
 import Comment from "./Comment.vue";
 import { getUserStorage } from "@/utils/auth";
 import CommentTree from "./CommentTree.vue";
+import { message } from "@/utils/message";
 const checked = ref(false);
 const props = defineProps({
   dynamicId: {
@@ -158,7 +159,21 @@ const limitTreeData = (nodes, limit = 5) => {
 
   return result;
 };
-
+//评论父级
+const reviewAdd = () => {
+  let params = {
+    dynamicId: props.dynamicId,
+    comment:msg.value
+  }
+  const needToken = true;
+  getReviewAdd(params,needToken).then(res => {
+    console.log('评论成功',res);
+    if (res.code == 200) {
+      msg.value = '';
+      message("评论成功", { type: "success" });
+    }
+  })
+}
 const limitedTreeData = computed(() => limitTreeData(comment.value));
 onMounted(() => {
   // getReplyAnchorNews().then((res) => {

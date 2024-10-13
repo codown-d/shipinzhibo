@@ -45,15 +45,26 @@
             </el-popover>
           </div>
           <div class="dflex margin-right">
-            <el-upload
+            <!-- 
+            :on-change="onChange"
+            action="/api/oss/upload" -->
+            <!-- <el-upload
               style="display: contents"
-              :on-change="onChange"
-              action="/api/oss/upload"
+              :http-request="onChange"
               ref="upload"
               :show-file-list="false"
               :accept="'image/*'"
               :multiple="false"
-              :limit="1"
+              :limit="3"
+            > -->
+            <el-upload
+              style="display: contents"
+              :http-request="onChange"
+              ref="upload"
+              :show-file-list="false"
+              accept=".png, .jpg"
+              :multiple="false"
+              :limit="3"
             >
               <template #trigger>
                 <img
@@ -77,17 +88,13 @@
               width="20"
             />话题
           </div>
-          <div
-            class="dflex"
-            @click="addMention"
-            v-if="$attrs.messageType === 'reply'"
-          >
+          <!-- <div class="dflex" @click="addMention" v-if="$attrs.messageType === 'reply'">
             <el-checkbox
               class="margin-right-xs"
               v-model="checked"
               label="同时转发"
             />
-          </div>
+          </div> -->
         </div>
         <div class="dflex" aria-hidden="false">
           <el-dropdown @command="handleCommand" v-if="false">
@@ -109,9 +116,9 @@
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-          <el-button type="primary" class="margin-left" @click="postSendMsgFn"
-            >发布</el-button
-          >
+          <el-button type="primary" class="margin-left" @click="postSendMsgFn">
+            {{props.node ? '发送' : '发布'}}
+          </el-button>
         </div>
       </div>
     </div>
@@ -121,15 +128,26 @@
 <script setup>
 import { ref, nextTick, onMounted } from "vue";
 import Emoji from "./Emoji.vue";
-import { getDynamicAdd } from "@/api/chat";
+import { getDynamicAdd,getUpload,getReviewAdd } from "@/api/chat";
 import { ElMessage, ElMention } from "element-plus";
 import { getMention } from "@/api/chat";
 import { useResizeObserver } from "@/hook";
+import { message } from "@/utils/message";
 const checked = ref(false);
 const mentionRef = ref(null);
 const options = ref([]);
 const msg = ref("");
-const props = defineProps(["actionType"]);
+const props = defineProps({
+  actionType: {
+    type: Array,
+    required: true
+  },
+  node: {
+    type: Object,
+    required: true
+  },
+  // ["actionType"]
+});
 const fileList = ref([]);
 const preview = ref(null);
 const dropdownMenuList = ref([
@@ -176,11 +194,26 @@ const beforeUpload = (file) => {
   fileList.value.push(file);
   return false;
 };
-const onChange = (file) => {
-  file["url"] = URL.createObjectURL(file.raw); // 创建临时URL
-  console.log(file);
-  preview.value = file.url;
-  fileList.value.push(file);
+//上传图片
+// const onChange = (file) => {
+//   file["url"] = URL.createObjectURL(file.raw); // 创建临时URL
+//   console.log(file);
+//   preview.value = file.url;//返回的图片地址
+//   fileList.value.push(file);
+// };
+const onChange = ({ file, onSuccess, onError }) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const needToken = true;
+  getUpload(formData,needToken).then(response => {
+    console.log('上传成功:', response);
+    let file = response.data; // 使用返回的图片地址
+    preview.value = file;
+    fileList.value.push(file);
+  })
+  .catch(error => {
+    console.error('上传失败:', error);
+  });
 };
 let emojiOnChange = (val, item) => {
   msg.value = `${msg.value}${val}`;
@@ -190,19 +223,39 @@ let addMention = async () => {
   mentionRef.value?.input.focus();
   msg.value = `${msg.value}#`;
 };
+//发送评论或者发布
 let postSendMsgFn = () => {
-  getDynamicAdd({
-    comtent: msg.value,
-    subjectId: subjectId.value,
-    attachmentType: "1",
-  }).then((res) => {
-    if (res.code == 200) {
-      ElMessage({
-        message: "发布成功",
-        type: "success",
-      });
+  //子级评论发送接口
+  if (props.node) {
+    let params = {
+      dynamicId: props.node.dynamicId,
+      comment:msg.value,
+      answerCommentId: props.node.dynamicCommentId,
+      answerUid: props.node.uid
     }
-  });
+    const needToken = true;
+    getReviewAdd(params,needToken).then(res => {
+      console.log('评论成功',res);
+      if (res.code == 200) {
+        msg.value = '';
+        message("评论成功", { type: "success" });
+      }
+    })
+  }else {//不是评论子级走这里
+    getDynamicAdd({
+      comtent: msg.value,
+      subjectId: subjectId.value,
+      attachmentType: "1",
+    }).then((res) => {
+      if (res.code == 200) {
+        ElMessage({
+          message: "发布成功",
+          type: "success",
+        });
+      }
+    });
+  }
+  
 };
 onMounted(() => {
   getMention().then((res) => {

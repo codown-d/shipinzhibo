@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="margin-top-sm" v-for="(item,index) in list">
+    <div class="margin-top-sm" v-for="item in list">
       <anchor-news
       :key="index"
       :publisher="item.publisher"
@@ -27,7 +27,6 @@ onMounted(() => {
     pageNum: 1,
     pageSize: 20,
   }).then(async (res) => {
-    console.log(res)
     let arr = [];
     for (let i = 0; i < res.data.length; i++) {
       let item = res.data[i];
@@ -35,7 +34,7 @@ onMounted(() => {
         queryUid: item.userDynamic.uid,
         visitor: false,
       });
-      console.log(item, result);
+      // console.log(item, result);
       arr.push({
         publisher: {
           nickname: result.nick,

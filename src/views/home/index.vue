@@ -11,22 +11,16 @@
       <Navbar></Navbar>
       <!-- 首页播放器模块 -->
       <div class="container-box">
-      <div class="container">
-        <!-- 原来的结构 -->
-        <!-- <div class="video-content" @mouseenter="mouseenter" @mouseleave="mouseleave" element-loading-background="#333333"
-          element-loading-text="正在加载" v-loading="video_loading"> -->
-          <div class="artplayer-app"></div>
-          <!-- <el-button v-show="moveStatus && !video_loading" class="btn_join" type="primary" plain>进入直播间</el-button> -->
-        <!-- </div> -->
-
-        <!-- 播放器右侧图片列表 -->
-        <div class="rooms" v-if="hotList.length">
-          <div class="room-item" @click="toogleVideo(i)" :class="current === i ? 'selected' : ''"
-            v-for="(item, i) in hotList" :key="item.rid">
-            <img class="room-img" :style="{ background: 'url(' + item.avatar + ') center top / cover no-repeat' }" alt="">
+        <div class="container">
+            <div class="artplayer-app"></div>
+          <!-- 播放器右侧图片列表 -->
+          <div class="rooms" v-if="hotList.length">
+            <div class="room-item" @click="toogleVideo(i)" :class="current === i ? 'selected' : ''"
+              v-for="(item, i) in hotList" :key="item.rid">
+              <img class="room-img" :style="{ background: 'url(' + item.avatar + ') center top / cover no-repeat' }" alt="">
+            </div>
           </div>
         </div>
-      </div>
       </div>
       <!-- 推荐列表 -->
       <div :class="device ? '' : 'mobile_plate'" style="background-color: #fff;">
@@ -57,25 +51,19 @@
       </div> -->
       <!-- 官方活动 -->
       <div class="official-activity">
-      <div class="authority-title-left">
-        <img class="authority-img" src="https://cdn.sportnanoapi.com/football/team/3b720f181ce9993f9422d276acf7b292.png" alt="">
-        <span class="authority-text">官方活动</span>
-      </div>
-      <!-- 图片内容 -->
-      <div class="authority-picture-img">
-       <a href="#" target="_blank">
-         <img src="http://cdn.img.mhuan.shop/FvyP5Y4tpY2GQZ9rMiAPIvb8wK3G.png" alt="img" class="act-item">
-       </a>
-       <a href="#" target="_blank">
-         <img src="http://cdn.img.mhuan.shop/FtVG_7V60YNurXzI-iZWNggbRs9v.png" alt="img" class="act-item">
-       </a>
-       <a href="#" target="_blank">
-         <img src="http://cdn.img.mhuan.shop/Fsxqk67wU2FMkA248m1cHtvMfZS0.png" alt="img" class="act-item">
-       </a>
-       <a href="#" target="_blank">
-         <img src="http://cdn.img.mhuan.shop/FlieOV-SPtjUfgDlyuPmHj-J3snF.png" alt="img" class="act-item">
-       </a>
-      </div>
+        <div class="authority-title-left">
+          <img class="authority-img" src="https://cdn.sportnanoapi.com/football/team/3b720f181ce9993f9422d276acf7b292.png" alt="">
+          <span class="authority-text">官方活动</span>
+        </div>
+        <!-- 图片内容 -->
+        <div class="authority-picture-img" style="width: 100%; height: 200px;">
+          <el-carousel motion-blur :interval="4000" type="card" style="width: 100%; height: 200px;">
+            <el-carousel-item v-for="item in bannerList" :key="item">
+              <!-- <div class="act-item" :style="{ backgroundImage: `url(${item.bannerPic})`,borderRadius: '10px' }"></div> -->
+              <div class="act-item" :style="{ backgroundImage: `url(${item.bannerPic})` }"></div>
+            </el-carousel-item>
+          </el-carousel>
+        </div>
       </div>
       <!-- 底部合作、联系我们 -->
       <div class="main-page-footer">
@@ -90,7 +78,8 @@
 
 <script setup>
 import { provide, ref, computed ,onMounted,onUpdated,shallowRef} from 'vue'
-import { getRecommendRoom, getRoomTag } from '@/api/home';
+import { getRecommendRoom, getRoomTag, getIndexBanner } from '@/api/home';
+import { getVoiceTvList } from '@/api/detail';
 import Navbar from '@/components/navbar.vue'
 import { getRoomKey } from "@/api/room";
 import { JcLive } from '@/utils/live'
@@ -110,6 +99,8 @@ import { result } from 'lodash-es';
 import { message } from "@/utils/message";
 import drawVideoFramesToCanvas from "@/utils/drawVideoFramesToCanvas";
 import { ElLoading } from 'element-plus';
+import CustomVideoPlayer from "../../utils/VideoPlayerUtils";//视频播放管理
+var globalVideo = null;
 const isLoading = ref(true); // 加载状态
 const store = useAppStoreHook()
 const device = computed(() => {
@@ -117,89 +108,9 @@ const device = computed(() => {
 })
 
 //播放器右侧图片列表数据
-const hotList = ref([
-  // {
-  //   avatar:'http://cdn.img.mhuan.shop/Fu593mydb4uSHhZQfzxC8psWQTRu.png'
-  // },
-  // {
-  //   avatar:'http://cdn.img.mhuan.shop/FkTqxBSRPNHgXHJNHnV-qbsk4ASk.png'
-  // },
-  // {
-  //   avatar:'http://cdn.img.mhuan.shop/FpqQHSq2lUbRsQ82ObLxFJwCxeYk.jpg'
-  // },
-  // {
-  //   avatar:'http://cdn.img.mhuan.shop/Fqu41vMKOHTF6vDIkfGftcpAxJ_y.png'
-  // },
-  // {
-  //   avatar:'http://cdn.img.mhuan.shop/FoM4kXSL4J-XefEZEwBrIKss-i74.png'
-  // },
-  // {
-  //   avatar:'http://cdn.img.mhuan.shop/17217162074635522.png'
-  // },
-])
+const hotList = ref([])
 //推荐列表数据
-const tagList = ref([
-  // {
-  //   rid:'22',
-  //   roomTag:'推荐一',
-  //   avatar:[
-  //     {
-  //       avatarListUrl:'http://cdn.img.mhuan.shop/Fu593mydb4uSHhZQfzxC8psWQTRu.png',
-  //       title:'费德勒VS纳达尔 谁才是真正的1',
-  //     },
-  //     {
-  //       avatarListUrl:'http://cdn.img.mhuan.shop/FkTqxBSRPNHgXHJNHnV-qbsk4ASk.png',
-  //       title:'费德勒VS纳达尔 谁才是真正的2',
-  //     },
-  //     {
-  //       avatarListUrl:'http://cdn.img.mhuan.shop/FpqQHSq2lUbRsQ82ObLxFJwCxeYk.jpg',
-  //       title:'费德勒VS纳达尔 谁才是真正的3',
-  //     },
-  //     {
-  //       avatarListUrl:'http://cdn.img.mhuan.shop/Fqu41vMKOHTF6vDIkfGftcpAxJ_y.png',
-  //       title:'费德勒VS纳达尔 谁才是真正的4',
-  //     },
-  //     {
-  //       avatarListUrl:'http://cdn.img.mhuan.shop/FoM4kXSL4J-XefEZEwBrIKss-i74.png',
-  //       title:'费德勒VS纳达尔 谁才是真正的5',
-  //     },
-  //     {
-  //       avatarListUrl:'http://cdn.img.mhuan.shop/17217162074635522.png',
-  //       title:'费德勒VS纳达尔 谁才是真正的6',
-  //     },
-  //   ]
-  // },
-  // {
-  //   rid:'2',
-  //   roomTag:'推荐二',
-  //   avatar:[
-  //     {
-  //       avatarListUrl:'http://cdn.img.mhuan.shop/Fu593mydb4uSHhZQfzxC8psWQTRu.png',
-  //       title:'厦门耐看型姐姐~~',
-  //     },
-  //     {
-  //       avatarListUrl:'http://cdn.img.mhuan.shop/FkTqxBSRPNHgXHJNHnV-qbsk4ASk.png',
-  //       title:'厦门耐看型姐姐~~',
-  //     },
-  //     {
-  //       avatarListUrl:'http://cdn.img.mhuan.shop/FpqQHSq2lUbRsQ82ObLxFJwCxeYk.jpg',
-  //       title:'厦门耐看型姐姐~~',
-  //     },
-  //     {
-  //       avatarListUrl:'http://cdn.img.mhuan.shop/Fqu41vMKOHTF6vDIkfGftcpAxJ_y.png',
-  //       title:'厦门耐看型姐姐~~',
-  //     },
-  //     {
-  //       avatarListUrl:'http://cdn.img.mhuan.shop/FoM4kXSL4J-XefEZEwBrIKss-i74.png',
-  //       title:'厦门耐看型姐姐~~',
-  //     },
-  //     {
-  //       avatarListUrl:'http://cdn.img.mhuan.shop/17217162074635522.png',
-  //       title:'厦门耐看型姐姐~~',
-  //     },
-  //   ]
-  // }
-])
+const tagList = ref([])
 //热门列表数据
 const tagHotlsit = ref([])
 //列表推荐左侧标题数据
@@ -256,14 +167,6 @@ const current = ref(-1)
 const video_loading = ref(true);//视频加载完成状态
 const moveStatus = ref(false);//控制进入直播间按钮-显示隐藏
 
-onMounted(()=>{
-  //游客登录+获取浏览器唯一标识
-  getUserGuest()
-  // 监听路由切换-直播详情页面切换回来后执行播放事件
-  // window.addEventListener('focus', activated);
-  // 监听浏览器标签可见性变化
-  document.addEventListener('visibilitychange', handleVisibilityChange);
-})
 onUpdated(()=>{
   //游客登录+获取浏览器唯一标识
   // getUserGuest()
@@ -286,13 +189,13 @@ const getUserGuest = () => {
     background: 'rgba(0, 0, 0, 0.7)',
   });
   let imei = localStorage.getItem('browserId');//获取存储到缓存中的浏览器唯一标识
-  console.log('获取浏览器指纹',imei);
+  // console.log('获取浏览器指纹',imei);
   if (imei) {
     loading.value = true;
     //调用公共方法登陆
     useUserStoreHook().getTouristLogin({ gender: 0 },imei).then(res => {
       let token = getToken()
-      console.log('[ 游客登录获取token ] >', token)
+      // console.log('[ 游客登录获取token ] >', token)
       if (token.access_token !== '') {
         //播放器右侧图片列表数据请求
         getRecommendRoomRight();
@@ -300,7 +203,8 @@ const getUserGuest = () => {
         getRecommended();
         //热门
         getHot();
-
+        //轮播图数据
+        getIndexBannerList();
         isLoading.value = false; // 数据加载完成，隐藏加载状态
         loadingInstance.close();//销毁loading
       }
@@ -322,7 +226,8 @@ const getUserGuest = () => {
           getRecommended();
           //热门
           getHot();
-
+          //轮播图数据
+          getIndexBannerList();
           isLoading.value = false; // 数据加载完成，隐藏加载状态
           loadingInstance.close();//销毁loading
         }
@@ -359,9 +264,11 @@ const getRecommendRoomRight = () => {
   const needToken = true;// 根据实际需要设置是否需要token
   getRecommendRoom({ type: 2 },needToken).then((res) => {
     // 重复连接.concat(res.data)将数据量扩大
-    res.data = res.data.concat(res.data).concat(res.data).concat(res.data)
-    hotList.value = res.data.slice(0, 6)
-    console.log('数据是什么',hotList.value)
+    // res.data = res.data.concat(res.data).concat(res.data).concat(res.data)
+    // hotList.value = res.data.slice(0, 6)
+    res.data = res.data;
+    hotList.value = res.data.slice(0, 6);
+    // console.log('数据是什么',hotList.value)
     toogleVideo(0);//右侧栏点击事件
   })
 }
@@ -370,7 +277,7 @@ const getRecommended = () =>{
   const needToken = true;// 根据实际需要设置是否需要token
   //type=1 推荐，type=2热门
   getRecommendRoom({ type: 1 },needToken).then((res) => {
-    console.log('[ 推荐列表数据 ] >', res.data)
+    // console.log('[ 推荐列表数据 ] >', res.data)
     tagList.value = res.data
     // 重复连接.concat(res.data)将数据量扩大
     // res.data = res.data.concat(res.data).concat(res.data).concat(res.data)
@@ -383,7 +290,7 @@ const getHot = () =>{
   const needToken = true;// 根据实际需要设置是否需要token
   //type=1 推荐，type=2热门
   getRecommendRoom({ type: 2 },needToken).then((res) => {
-    console.log('[ 热门列表数据 ] >', res.data)
+    // console.log('[ 热门列表数据 ] >', res.data)
     tagHotlsit.value = res.data
     // 重复连接.concat(res.data)将数据量扩大
     // res.data = res.data.concat(res.data).concat(res.data).concat(res.data)
@@ -391,145 +298,228 @@ const getHot = () =>{
     // console.log('数据是什么',hotList.value)
   })
 }
+onMounted(async()=>{
+  //游客登录+获取浏览器唯一标识
+  getUserGuest();
+  // 监听路由切换-直播详情页面切换回来后执行播放事件
+  // window.addEventListener('focus', activated);
+  // 监听浏览器标签可见性变化
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+})
 //视频播放器右侧事件==首次执行
 const toogleVideo = (i) => {
-  // console.log('[ 点击的选项 ] >', i)
-  // if (current.value === i) {
-  //   return
-  // }
-  // console.log('返回来播放吗');
-  
-  video_loading.value = true
   current.value = i
   //视频直播的加入和播放过程
   let room = hotList.value[i];//右侧直播点击选中的数据
-  // let room = 22
   //请求直播间接口
   const needToken = true; // 根据实际需要设置是否需要token
   getRoomKey({ rid: room.rid ? room.rid : togglerid},needToken).then(res => {
     const { url, token } = res.data; // 获取直播流的播放地址和鉴权凭证
-    console.log('返回url', url)
-    console.log('返回token', token)
-    // let playUrlToken = {
-    //   ...url,
-    //   ...token
-    // }
-    initArtplayer(url + '#' + token,room)
-    // return live.join(url, token); // 加入频道
+    // console.log('获取房间返回数据',url)
+    if(globalVideo){
+      globalVideo.destroy();//销毁上一个视频
+    }
+    // 定义进入直播间图层
+    const enterStudioLayer = {
+      name: 'enterStudio',
+      html: `
+        <div id="enterStudio" style="
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 200px;
+          height: 60px;
+          line-height: 60px;
+          text-align: center;
+          transform: translate(-50%, -50%);
+          font-size: 20px;
+          background-color: #fda031;
+          border-radius: 5px;
+          display: none;
+          z-index: 99;
+        ">进入直播间</div>
+      `,
+      click: function (...args) {
+        console.info('点击进入直播间', args);
+        console.info('对应的rid', room.rid);
+        window.open(`/detail/${room.rid}/${room.owner}/${room.type}`, "_blank");
+      },
+      mounted: function (...args) {
+        console.info('enterStudio图层已挂载', args);
+      },
+    };
+    globalVideo = new CustomVideoPlayer(".artplayer-app",{},[enterStudioLayer]);
+    const client = new Room();
+    // 处理视频流
+    client.on(RoomEvent.TrackSubscribed, (track) => {
+      if (track.kind === "video") {
+        playVideo(track);
+        // 在视频开始播放后应用虚化效果
+        // globalVideo.art.on('play', () => {
+          // drawVideoFramesToCanvas(globalVideo.art);
+        // });
+      }
+    });
+    
+    window.art = globalVideo.art
+    client.connect(url, token);
+    if(room.type != 2){
+      const needToken = true;
+      getVoiceTvList({ rid: room.rid ? room.rid : togglerid},needToken).then(res => {
+        playVideo(res.data)
+        // 对于非直播视频，也在播放开始时应用虚化效果
+        // globalVideo.art.on('play', () => {
+        //   console.log('Non-live video started playing, applying blur effect');
+        //   drawVideoFramesToCanvas(globalVideo.art);
+        // });
+      })
+    }
+    // 添加鼠标事件监听器
+    const container = document.querySelector(globalVideo.art.option.container);
+    container.addEventListener('mouseenter', () => {
+      document.getElementById('enterStudio').style.display = 'block';
+    });
+    container.addEventListener('mouseleave', () => {
+      document.getElementById('enterStudio').style.display = 'none';
+    });
   }).catch(err => {
-    // console.error('错误toggleVideo error:', err);
-    // video_loading.value = false;
-    // showErrorNotice(err.message); // 显示错误提示
+
   });
 }
 
-//WebRTC协议播放
-let art = shallowRef(null);
-var togglerid; //存储跳转直播详情页面的房间rid
-const initArtplayer = (playLink,room) => {
-  // playLink : wss://rtc.zegec.com#eyJ0eXAiOiJKV1QiLCJlzMiJ9.kfEI3kWkuUzbTgmK6WunUuZh6Ft3YE1YC3LmQlZOKDY
-  console.log('1传入的是什么',playLink);
-  console.log('2传入的是什么',room);
-  if (art.value) {
-    art.value.destroy();
+//判断是否需要多条视频循环播放
+const playVideo = (playObj) => {
+  // 判断是否为列表
+  if(playObj instanceof Array){
+    globalVideo.playList(playObj)
+  }else{
+    globalVideo.play(playObj)
   }
-  art.value = new Artplayer({
-    container: '.artplayer-app',
-    fullscreen: true,//全屏
-    fullscreenWeb: true,//网页全屏
-    autoMini: true,//当播放器滚动到浏览器视口以外时，自动进入 迷你播放 模式
-    //playbackRate: true,//是否显示视频播放速度功能
-    //setting: true,//设置面板 的开关按钮
-    isLive: true,//直播模式隐藏进度条和播放时间
-    type: 'webrtc',
-    customType: {
-      webrtc: function playWebRTC(video, url, art) {
-        // let playUrl = url.split('#')[0]
-        // let token = url.split('#')[1]
+}
 
-        // let client = new Room();
-        // client.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
-        //   if (track.kind === "video") {
-        //     track.attach(video)
-        //   }
-        // });
-        // client.connect(playUrl, token);
+//底部轮播图
+const bannerList = ref([]);//底部轮播图数据
+const getIndexBannerList = () => {
+  let params = {
+    rid: null,
+    viewType:6,//1.首页顶部2.节目预告3.首页中间4.陪玩广告5.直播间底部6.首页底部
+  }
+  const needToken = true;
+  getIndexBanner(params,needToken).then(res => {
+    console.log('底部轮播图bannerPic1231',res.data);
+    bannerList.value = res.data;
+    console.log('底部轮播图bannerPic',bannerList.value);
+  }).catch(err => {
 
-        if(art.webrtc) art.webrtc.disconnect();
-        const [playUrl,token] = url.split('#');
-        let client = new Room();
-        client.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
-          if (track.kind === "video") {
-            track.attach(video)
-          }
-        });
-        client.connect(playUrl, token);
-        art.webrtc = client;
-        // 销毁时断开连接
-        art.on('destroy',()=> {
-          if (art.webrtc) {
-            art.webrtc.disconnect();
-            art.webrtc = null;
-          }
-        });
-      },
-    },
-    video: {
-      url: playLink // 将 WebRTC 流的 URL 设置到 video.url 中
-      // url: null
-    }
   });
-  //添加-进入直播间-图层
-  const enterStudio = `
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 200px;
-    height: 60px;
-    line-height: 60px;
-    text-align: center;
-    transform: translate(-50%, -50%);
-    font-size: 20px;
-    background-color: #fda031;
-    border-radius: 5px;
-    display: none;
-  `;
-  art.value.layers.add({
-    name: 'potser',
-    html: `<div id="potser" style="${enterStudio}">进入直播间</div>`,
-    // tooltip: 'Potser Tip',
-    // 进入直播间 点击事件
-    click: function (...args) {
-      console.info('click', args);
-      console.info('点击获取对应的rid', room.rid);
-      togglerid = room.rid
-      window.open(`/detail/${room.rid}/${room.owner}/${room.type}`, "_blank");
-    },
-    //potser图层已挂载执行
-    mounted: function (...args) {
-      console.info('mounted', args);
-    },
-  });
+}
+//WebRTC协议播放
+// let art = shallowRef(null);
+// var togglerid; //存储跳转直播详情页面的房间rid
+// const initArtplayer = (playLink,room) => {
+//   // playLink : wss://rtc.zegec.com#eyJ0eXAiOiJKV1QiLCJlzMiJ9.kfEI3kWkuUzbTgmK6WunUuZh6Ft3YE1YC3LmQlZOKDY
+//   console.log('1传入的是什么',playLink);
+//   console.log('2传入的是什么',room);
+//   if (art.value) {
+//     art.value.destroy();
+//   }
+//   art.value = new Artplayer({
+//     container: '.artplayer-app',
+//     fullscreen: true,//全屏
+//     fullscreenWeb: true,//网页全屏
+//     autoMini: true,//当播放器滚动到浏览器视口以外时，自动进入 迷你播放 模式
+//     //playbackRate: true,//是否显示视频播放速度功能
+//     //setting: true,//设置面板 的开关按钮
+//     isLive: true,//直播模式隐藏进度条和播放时间
+//     type: 'webrtc',
+//     customType: {
+//       webrtc: function playWebRTC(video, url, art) {
+//         // let playUrl = url.split('#')[0]
+//         // let token = url.split('#')[1]
+
+//         // let client = new Room();
+//         // client.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
+//         //   if (track.kind === "video") {
+//         //     track.attach(video)
+//         //   }
+//         // });
+//         // client.connect(playUrl, token);
+
+//         if(art.webrtc) art.webrtc.disconnect();
+//         const [playUrl,token] = url.split('#');
+//         let client = new Room();
+//         client.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
+//           if (track.kind === "video") {
+//             track.attach(video)
+//           }
+//         });
+//         client.connect(playUrl, token);
+//         art.webrtc = client;
+//         // 销毁时断开连接
+//         art.on('destroy',()=> {
+//           if (art.webrtc) {
+//             art.webrtc.disconnect();
+//             art.webrtc = null;
+//           }
+//         });
+//       },
+//     },
+//     video: {
+//       url: playLink // 将 WebRTC 流的 URL 设置到 video.url 中
+//       // url: null
+//     }
+//   });
+//   //添加-进入直播间-图层
+//   const enterStudio = `
+//     position: absolute;
+//     top: 50%;
+//     left: 50%;
+//     width: 200px;
+//     height: 60px;
+//     line-height: 60px;
+//     text-align: center;
+//     transform: translate(-50%, -50%);
+//     font-size: 20px;
+//     background-color: #fda031;
+//     border-radius: 5px;
+//     display: none;
+//   `;
+//   art.value.layers.add({
+//     name: 'potser',
+//     html: `<div id="potser" style="${enterStudio}">进入直播间</div>`,
+//     // tooltip: 'Potser Tip',
+//     // 进入直播间 点击事件
+//     click: function (...args) {
+//       console.info('click', args);
+//       console.info('点击获取对应的rid', room.rid);
+//       togglerid = room.rid
+//       window.open(`/detail/${room.rid}/${room.owner}/${room.type}`, "_blank");
+//     },
+//     //potser图层已挂载执行
+//     mounted: function (...args) {
+//       console.info('mounted', args);
+//     },
+//   });
   
-  // 监听鼠标移入事件，显示图层
-  document.querySelector(art.value.option.container).addEventListener('mouseenter', () => {
-    //获取添加 进入直播间的id显示
-    const potserLayer = document.getElementById('potser');
-    potserLayer.style.display = 'block';
-  });
-  // 监听鼠标移出事件，隐藏图层
-  document.querySelector(art.value.option.container).addEventListener('mouseleave', () => {
-    //获取添加 进入直播间的id隐藏
-    const potserLayer = document.getElementById('potser');
-    potserLayer.style.display = 'none';
-  });
-  art.value.on('ready', () => {
-    //竖屏左右两边虚化
-    drawVideoFramesToCanvas(art.value);//实现原理是拿到视频播放的图像 把它当作背景图虚化 
-  });
-  art.value.switchUrl(playLink)//切换播放url
-};
-window.art = art.value;
+//   // 监听鼠标移入事件，显示图层
+//   document.querySelector(art.value.option.container).addEventListener('mouseenter', () => {
+//     //获取添加 进入直播间的id显示
+//     const potserLayer = document.getElementById('potser');
+//     potserLayer.style.display = 'block';
+//   });
+//   // 监听鼠标移出事件，隐藏图层
+//   document.querySelector(art.value.option.container).addEventListener('mouseleave', () => {
+//     //获取添加 进入直播间的id隐藏
+//     const potserLayer = document.getElementById('potser');
+//     potserLayer.style.display = 'none';
+//   });
+//   art.value.on('ready', () => {
+//     //竖屏左右两边虚化
+//     drawVideoFramesToCanvas(art.value);//实现原理是拿到视频播放的图像 把它当作背景图虚化 
+//   });
+//   art.value.switchUrl(playLink)//切换播放url
+// };
+// window.art = art.value;
 
 // 鼠标进入
 // const mouseenter = () => {
@@ -539,12 +529,41 @@ window.art = art.value;
 // const mouseleave = () => {
 //   moveStatus.value = false
 // }
-
 </script>
 
 
 
 <style lang="scss" scoped>
+//底部的轮播图
+// .authority-picture-img{
+  // display: inline-block;
+  // display: flex;
+  // width: 100%;
+  // height: 200px;
+  // background-color: #f5f6fa;
+// }
+::v-deep .el-carousel__container {
+  height: 100% !important; /* 覆盖默认高度，确保填满父容器 */
+}
+// ::v-deep .el-carousel__item {
+//   border-radius: 20px;
+// }
+// ::v-deep .el-carousel__item--card {
+//   border-radius: 20px;
+// }
+::v-deep .el-carousel__arrow{
+  background-color: #ccc;
+  opacity: 0.85;
+}
+.act-item {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  // border-radius: 20px;
+}
 .loading-container{
   position: relative;
   width: 100%;
@@ -714,7 +733,7 @@ window.art = art.value;
 }
 //官方活动
 .official-activity{
-  padding: 30px 355px;
+  padding: 30px 355px 0 355px;
   background-color: #fff;
   // margin-top: 16px;
   .authority-title-left{
@@ -737,22 +756,18 @@ window.art = art.value;
       color: #ff8b00;
     }
   }
-  .authority-picture-img{
-    // display: inline-block;
-    display: flex;
-    width: 100%;
-  }
-  .authority-picture-img a:first-child .act-item {
-    margin-left: 0;
-  }
-  .authority-picture-img a .act-item {
-    display: inline-block;
-    width: 288px;
-    height: 168px;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-left: 16px;
-  }
+  
+  // .authority-picture-img a:first-child .act-item {
+  //   margin-left: 0;
+  // }
+  // .authority-picture-img a  {
+  //   display: inline-block;
+  //   width: 288px;
+  //   height: 168px;
+  //   border-radius: 8px;
+  //   cursor: pointer;
+  //   margin-left: 16px;
+  // }
 }
 //底部合作、联系我们
 .main-page-footer {

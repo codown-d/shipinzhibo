@@ -87,10 +87,10 @@
                 </div>
                 <!-- 右侧小游戏 -->
                 <div class="mini-games">
+                  <!-- <img class="mini-gamesimg" src="@/assets/images/redpacket1.png" alt="">
                   <img class="mini-gamesimg" src="@/assets/images/redpacket1.png" alt="">
                   <img class="mini-gamesimg" src="@/assets/images/redpacket1.png" alt="">
-                  <img class="mini-gamesimg" src="@/assets/images/redpacket1.png" alt="">
-                  <img class="mini-gamesimg" src="@/assets/images/redpacket1.png" alt="">
+                  <img class="mini-gamesimg" src="@/assets/images/redpacket1.png" alt=""> -->
                 </div>
               </div>
             </div>
@@ -200,8 +200,19 @@
               </div>
             </div>
           </div>
+          <!-- 底部轮播图 -->
+          <div class="authority-picture-img" style="width: 100%;">
+            <el-carousel height="200px" motion-blur>
+              <el-carousel-item v-for="item in bannerList" :key="item">
+                <!-- <h3 class="small justify-center" text="2xl">{{ item }}</h3> -->
+                <div class="act-item" :style="{ backgroundImage: `url(${item.bannerPic})` }"></div>
+              </el-carousel-item>
+            </el-carousel>
+          </div>
         </div>
       </div>
+      
+
       <!-- 福袋规则遮罩层 -->
       <div
         class="LuckyBagRuleModal"
@@ -272,6 +283,7 @@ import { ElLoading } from 'element-plus';
 import Navbar from "@/components/navbar.vue";
 import Leftmenu from "@/components/Leftmenu.vue";
 import { getRoomKey, getMessageKey } from "@/api/room";
+import { getIndexBanner } from '@/api/home';//底部轮播图接口
 import {
   getRedPacketList,
   getRedPacketWinOrNot,
@@ -348,22 +360,6 @@ const checkedStatus = ref(false);
 const handleChange = (checked) => {
   console.log("勾选状态", checked);
 };
-//模拟弹幕接口 正常是一个websocket链接 或者一个setInterval 的定时http请求
-// const getCurtainBomb = () => {
-//   setInterval(() => {
-//     // console.log(art.value);
-//     if (art.value) {
-//       // art.value.plugins.artplayerPluginDanmuku.emit({
-//       //   text: "661236", // 文本
-//       //   time: 5, // 所在时间单位秒，默认取播放器当前时间
-//       //   color: "#fff", // 颜色
-//       //   size: 25, // 尺寸
-//       //   border: false, // 是否有描边
-//       //   // mode: 0, // 模式: 滚动 0 或者静止 1
-//       // });
-//     }
-//   }, 5000);
-// };
 
 const isShareSelected = ref(false);
 const toggleSelected = (item) => {
@@ -752,10 +748,8 @@ const startTimers = () => {
         // 倒计时结束
         // item.countdownEnded = 0;
         clearInterval(intervalId);
-        // console.log('[ 倒计时结束那对应id ] >', item)
-        // initLottieAnimations(item.id);//显示json特效图
       }
-    }, 100);
+    }, 1000);
     intervalIds.value.push(intervalId);
   });
 };
@@ -937,12 +931,27 @@ const playVideo = (playObj) => {
     globalVideo.play(playObj)
   }
 }
+//底部轮播图
+const bannerList = ref([]);//底部轮播图数据
+const getIndexBannerList = () => {
+  let params = {
+    rid: rid,
+    viewType:5,//1.首页顶部2.节目预告3.首页中间4.陪玩广告5.直播间底部6.首页底部
+  }
+  const needToken = true;
+  getIndexBanner(params,needToken).then(res => {
+    bannerList.value = res.data;
+    console.log('底部轮播图bannerPic',bannerList.value);
+  }).catch(err => {
+
+  });
+}
 //右侧ref元素，确保渲染完成
 const layoutMain = ref(null);
 onMounted(async() => {
   //随机数
   currentNumber.value = getRandomNumber(10001);
-  setInterval(updateNumber, 3000);
+  setInterval(updateNumber, 3000);//生成一个-200到200之间的随机整数
   // console.log("[ 路由是什么 ] >", route);
   // console.log("[ 2是什么 ] >", store.device);
   // console.log("[ rid是什么 ] >", rid);
@@ -970,7 +979,7 @@ onMounted(async() => {
   }
   getWhetherFollow(); //查询是否关注
   getDetails(); //查询直播间详情
-
+  getIndexBannerList();//查询底部轮播图
   // 获取直播｜｜视频，房间的url&token
   let result = await toogleVideo();
   let { url, token } = result.data;
@@ -1072,6 +1081,17 @@ onUpdated(() => {
 // });
 </script>
 <style lang="scss" scoped>
+::v-deep .el-carousel {
+  height: 1.521rem !important; /* 没有高度显示不出来 */
+}
+::v-deep .el-carousel__container {
+  height: 100% !important; /* 覆盖默认高度，确保填满父容器 */
+}
+::v-deep .el-carousel__arrow{
+  background-color: #ccc;
+  opacity: 0.85;
+}
+
 .loading-container{
   position: relative;
   width: 100%;
@@ -1120,14 +1140,14 @@ onUpdated(() => {
     }
     .layout-Main {
       width: 100%;
-      height: 100%;
-      // padding-left: 112px;
-      // padding-left: 268px;//侧边栏收起
+      // height: 100%; 加了轮播图先去掉高度
       padding-top: 28px;
+      padding-bottom: 28px;
       padding-right: 1.835rem;
       background-color: #fff;
       flex-grow: 1;
       overflow-y: auto;
+      box-sizing: border-box;
       .detailsRight {
         width: 100%;
         // height: 736px;
@@ -1483,6 +1503,20 @@ onUpdated(() => {
               }
             }
           }
+        }
+      }
+      //底部轮播图
+      .authority-picture-img{
+        margin-top: 0.3rem;
+        margin-bottom: 0.3rem;
+        .act-item {
+          display: block;
+          width: 100%;
+          height: 100%;
+          background-size: contain;
+          background-position: center;
+          background-repeat: no-repeat;
+          // border-radius: 20px;
         }
       }
     }

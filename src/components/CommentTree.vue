@@ -24,12 +24,13 @@
               }}</span>
             </div>
             <div class="operationRight dflex">
+              <!-- 子级评论 -->
               <img
                 src="/images/emio7.svg"
                 class="margin-right"
                 alt="My Icon"
                 width="14"
-                @click="setCommentInfo(props)"
+                @click="setCommentInfo(props.node)"
               />
               <div class="dflex">
                 <img
@@ -74,13 +75,33 @@
         @load-node="(child,callback)=>$emit('load-node', child, callback)"
       />
     </div>
+
+    <el-dialog
+      v-model="dialogVisible"
+      :title="`回复@${actCommentInfo.nick}`"
+      width="600"
+    >
+      <chat-message
+        shadow="never"
+        class="new-msg"
+        :messageType="'reply'"
+        :body-style="{
+          padding: 0,
+        }"
+        :node="currentNode"
+      >
+      </chat-message>
+    </el-dialog>
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
+import ChatMessage from "./ChatMessage.vue";
 import { ref, computed, defineEmits } from "vue";
 import { formatTime } from "@/utils/lib";
 
+
+let dialogVisible = ref(false);//显示子级评论
 // 定义 props
 const props = defineProps({
   node: Object,
@@ -115,6 +136,17 @@ const add = () => {
     expanded.value = !expanded.value;
   }
 };
+
+//子级评论
+const actCommentInfo = ref({});
+const currentNode = ref(null);//存评论的数据
+const setCommentInfo =(node) => {
+  // console.log('子级的数据',node.userInfo);
+  currentNode.value = node; // 将 node 数据赋值给 currentNode
+  dialogVisible.value = true;
+  actCommentInfo.value = node.userInfo;//子级用户名称
+  
+}
 </script>
 
 <style scoped lang="scss">

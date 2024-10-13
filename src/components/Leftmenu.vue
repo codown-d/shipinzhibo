@@ -13,19 +13,15 @@
     </div>
     <!-- isCollapsed为true,则显示收起的样式 -->
     <div class="menu-packup" v-if="isCollapsed">
-      <a href="#" class="menu-packup-a">
+      <a href="/menuattention" class="menu-packup-a">
         <i class="fa-regular fa-heart"></i>
         <span class="menu-packup-text">关注</span>
       </a>
-      <!-- <a href="#" class="menu-packup-a">
-        <i class="fa fa-trophy"></i>
-        <span class="menu-packup-text">榜单</span>
-      </a> -->
-      <a href="#" class="menu-packup-a">
+      <a href="/competition" class="menu-packup-a">
         <i class="fa-regular fa-calendar"></i>
         <span class="menu-packup-text">赛事</span>
       </a>
-      <a href="#" class="menu-packup-a">
+      <a href="/types" class="menu-packup-a">
         <i class="fa-regular fa-th-large"></i>
         <span class="menu-packup-text">全部</span>
       </a>
@@ -61,8 +57,8 @@ const menuList = ref([
     icon: "fa fa-home",
     text: "我的关注",
     isfirst: false,
-    path: "/attention",
-    key: "attention",
+    path: "/menuattention",
+    key: "menuattention",
   },
   // { menuid: 2, icon: 'fa fa-chart-bar', text: '直播榜单' },
   {
@@ -118,7 +114,7 @@ const toggleSelect = (itemty) => {
   tagAct.value = itemty;
   emit("selectItem", itemty);
   currentPath.value=null
-  router.push({ path: "/types" });
+  // router.push({ path: "/types" });
 }
 //获取屏幕高度减去头部组件高度60
 const dynamicHeight = ref(0);
@@ -259,6 +255,7 @@ onMounted(() => {
         margin-bottom: 4px;
         margin-right: 4px;
         border-radius: 4px;
+        cursor: pointer;
       }
 
       .child-span:hover {

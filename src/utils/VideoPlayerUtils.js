@@ -4,15 +4,18 @@ import Hls from 'hls.js';
 import flvjs from 'flv.js';
 import VideoPlaylistManager from "./videoManagement";
 import { Room, RoomEvent,RemoteVideoTrack } from "livekit-client";
+import drawVideoFramesToCanvas from "@/utils/drawVideoFramesToCanvas";
 
 // 自定义视频播放器类，用于处理不同格式的视频播放
 export default class CustomVideoPlayer {
-    constructor(containerElement, customConfig = {}) {
+    constructor(containerElement, customConfig = {}, layers = []) {
         this.art = null; // Artplayer 实例
         this.videoPlaylistManager = null; // 视频播放列表管理器
         this.containerElement = containerElement; // 播放器容器元素
         this.customConfig = customConfig; // 自定义配置
+        this.layers = layers;
         this._initializePlayer(); // 初始化播放器
+        this._setupBlurEffect(); // 设置虚化效果
     }
 
     // 初始化播放器
@@ -40,7 +43,56 @@ export default class CustomVideoPlayer {
         // 合并默认配置和自定义配置
         const mergedConfig = this._mergeConfigs(defaultConfig, this.customConfig);
         this.art = new Artplayer(mergedConfig);
+
+        // 添加自定义图层
+        this._addCustomLayers();
     }
+    // 新增方法：设置虚化效果
+    _setupBlurEffect() {
+        if (this.art) {
+            this.art.on('ready', () => {
+                console.log('Video is ready, setting up blur effect');
+                this._applyBlurEffect();
+            });
+
+            this.art.on('play', () => {
+                console.log('Video started playing, applying blur effect');
+                this._applyBlurEffect();
+            });
+        }
+    }
+
+    // 新增方法：应用虚化效果
+    _applyBlurEffect() {
+        if (this.art && this.art.video) {
+            console.log('Applying blur effect');
+            drawVideoFramesToCanvas(this.art);
+        } else {
+            console.warn('Unable to apply blur effect: art or video element is not available');
+        }
+    }
+    // 新增方法：添加自定义图层
+    _addCustomLayers() {
+        this.layers.forEach(layer => {
+            this.addLayer(layer);
+        });
+    }
+    // 新增方法：清除所有图层
+    _clearLayers() {
+        if (this.art && this.art.layers) {
+            this.art.layers.forEach(layer => {
+                this.art.layers.remove(layer.name);
+            });
+        }
+        this.layers = [];
+    }
+    // 新增方法：添加单个图层
+    addLayer(layerConfig) {
+        if (this.art) {
+            this.art.layers.add(layerConfig);
+        }
+    }
+
 
     // 合并自定义配置
     _mergeConfigs(defaultConfig, customConfig) {
@@ -128,17 +180,26 @@ export default class CustomVideoPlayer {
     }
 
     // 播放单个视频
-    play(urlCode) {
+    play(urlCode,newLayers = []) {
+        // this._clearLayers(); // 清除现有图层
         this.art.destroy();
         this._initializePlayer();
+        this._setupBlurEffect(); // 重新设置虚化效果
         this.art.type = this._getVideoType(urlCode);
         this.art.switchUrl(urlCode);
+
+        // 添加新的图层
+        newLayers.forEach(layer => {
+            this.addLayer(layer);
+        });
     }
 
     // 播放视频列表(伪直播视频轮播)
-    playList(videoList) {
+    playList(videoList,newLayers = []) {
+        // this._clearLayers(); // 清除现有图层
         this.art.destroy();
         this._initializePlayer();
+        this._setupBlurEffect(); // 重新设置虚化效果
         
         this.videoPlaylistManager = new VideoPlaylistManager(videoList);
         let playInfo = this.videoPlaylistManager.getCurrentVideo();
@@ -159,5 +220,15 @@ export default class CustomVideoPlayer {
 
         this.art.type = this._getVideoType(playInfo.video.url);
         this.art.switchUrl(playInfo.video.url);
+
+        // 添加新的图层
+        newLayers.forEach(layer => {
+            this.addLayer(layer);
+        });
+    }
+
+    //销毁
+    destroy(){
+      this.art.destroy()
     }
 }

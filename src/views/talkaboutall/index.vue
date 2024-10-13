@@ -17,13 +17,9 @@
 <script setup>
 import AnchorNews from "@/components/AnchorNews.vue";
 import { onMounted, ref } from "vue";
-import { getAnchorNews, getUserInfo } from "@/api/chat";
+import { getUserInfo } from "@/api/chat";
 let list = ref([]);
 onMounted(() => {
-  getAnchorNews().then(async (res) => {
-    let arr = [];
-    list.value = [];
-  });
 });
 </script>
 <style lang="sass" scoped></style>

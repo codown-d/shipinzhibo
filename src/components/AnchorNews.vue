@@ -136,7 +136,7 @@
                 alt="My Icon"
                 width="20"
               />
-              <span>{{ dataInfo.relay_count }}</span>
+              <!-- <span>{{ dataInfo.relay_count }}</span> -->
             </span>
           </div>
         </section>
@@ -179,9 +179,11 @@
 <script setup>
 import { formatTime } from "@/utils/lib";
 import { ref, defineProps, onMounted, watch } from "vue";
-import { getPopularAnchor, getLike, getUnlike } from "@/api/chat";
+import { getLike, getUnlike } from "@/api/chat";
 import ChatMessage from "./ChatMessage.vue";
 import ReplyComment from "./ReplyComment.vue";
+import { ElMessage } from 'element-plus'
+import { message } from "@/utils/message";
 const props = defineProps({
   group: {
     type: Object,
@@ -308,24 +310,22 @@ let showReply=(item)=>{
 }
 let getLikeFn = (item) => {
   !dataInfo.value.liked
-    ? getLike({ dynamicId: item.dynamicMsgId }).then((res) => {
-        if (res.code == 0) {
+    ? getLike({ dynamicId: item.dynamicMsgId, isSendMsg:false}).then((res) => {
+        if (res.code == 200) {
+          
+          console.log('点赞成功有走吗', )
           dataInfo.value.liked = true;
           dataInfo.value.like_count = dataInfo.value.like_count + 1;
-          ElMessage({
-            message: "点赞成功",
-            type: "success",
-          });
+          // ElMessage({message: "点赞成功",type: "success",});
+          message("点赞成功", { type: "success" });
         }
       })
     : getUnlike({ dynamicId: item.dynamicMsgId }).then((res) => {
-        if (res.code == 0) {
+        if (res.code == 200) {
           dataInfo.value.liked = false;
           dataInfo.value.like_count = dataInfo.value.like_count - 1;
-          ElMessage({
-            message: "取消点赞成功",
-            type: "success",
-          });
+          // ElMessage({message: "取消点赞成功",type: "success",});
+          message("取消点赞成功", { type: "success" });
         }
       });
 };
@@ -337,9 +337,9 @@ watch(props, (newValue, oldValue) => {
   dataInfo.value=newValue
 },{ deep: true });
 onMounted(() => {
-  getPopularAnchor().then((res) => {
-    list.value = res.data.list;
-  });
+  // getPopularAnchor().then((res) => {
+  //   list.value = res.data.list;
+  // });
 });
 </script>
 

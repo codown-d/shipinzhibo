@@ -1,7 +1,6 @@
 <template>
-  <div class="margin-top-sm" v-for="(item,index) in list">
+  <div class="margin-top-sm" v-for="item in list">
     <anchor-news
-      :key="index"
       :publisher="item.publisher"
       :text="item.text"
       :comment_count="item.comment_count"
@@ -16,12 +15,12 @@
 <script setup>
 import AnchorNews from "@/components/AnchorNews.vue";
 import { onMounted, ref } from "vue";
-import { getAnchorNews } from "@/api/chat";
+// import { getAnchorNews } from "@/api/chat";
 let list = ref([]);
 onMounted(() => {
-  getAnchorNews().then((res) => {
-    list.value = res.data.list;
-  });
+  // getAnchorNews().then((res) => {
+  //   list.value = res.data.list;
+  // });
 });
 </script>
 <style lang="sass" scoped></style>

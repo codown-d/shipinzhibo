@@ -27,13 +27,7 @@
               <div class="carousel-time">
                 <span class="carousel-month">{{ item.formattedDate }}</span>
                 <span class="carousel-hms">{{ item.formattedTime }}</span>
-                <span class="carousel-game">{{
-                  item.status == 1
-                    ? "未开始"
-                    : item.status == 2
-                    ? "进行中"
-                    : "已结束"
-                }}</span>
+                <span class="carousel-game">{{ item.status == 1 ? "未开始" : item.status == 2 ? "进行中" : "已结束"}}</span>
               </div>
             </div>
             <span class="carousel-headright">直播间</span>
@@ -42,15 +36,7 @@
             <div class="banav-session">
               <div class="session-left">
                 <!-- <img class="session-img" src="https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg" alt=""> -->
-                <img
-                  class="session-img"
-                  :src="
-                    item.image
-                      ? item.image
-                      : 'https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg'
-                  "
-                  alt=""
-                />
+                <img class="session-img" :src="item.image ? item.image : 'https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg'" alt=""/>
                 <span class="session-name">{{ item.team }}</span>
               </div>
               <div style="font-size: 14px; color: #fff; line-height: 32px">
@@ -59,15 +45,7 @@
             </div>
             <div class="banav-session" style="margin-top: 10px">
               <div class="session-left">
-                <img
-                  class="session-img"
-                  :src="
-                    item.toImage
-                      ? item.toImage
-                      : 'https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg'
-                  "
-                  alt=""
-                />
+                <img class="session-img" :src=" item.toImage ? item.toImage : 'https://cdn.sportnanoapi.com/basketball/team/9198540adaea90e558c4f75798c6a13a.jpg'" alt=""/>
                 <span class="session-name">{{ item.toTeam }}</span>
               </div>
               <div style="font-size: 14px; color: #fff; line-height: 32px">
@@ -168,12 +146,12 @@ onMounted(() => {
 });
 
 let slideToPrev=()=>{
-    if (swiperInstance) {
+  if (swiperInstance) {
     swiperInstance.slidePrev();
   }
 }
 let slideToNext=()=>{
-    if (swiperInstance) {
+  if (swiperInstance) {
     swiperInstance.slideNext();
   }
 }

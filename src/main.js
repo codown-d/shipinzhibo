@@ -9,7 +9,6 @@ import './style.css'
 import "amfe-flexible"
 // import "@/utils/adaptation"
 import '../mock'; // 确保这个路径和文件名是正确的
-
 const app = createApp(App)
 setupStore(app)
 

@@ -3,6 +3,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import Login from "@/views/login/index.vue";
 import Home from "@/views/home/index.vue";
 import Detail from "@/views/detail/index.vue";
+import Menuattention from "@/views/menuattention/index.vue";//左侧菜单-我的关注
 import Types from "@/views/types/index.vue";//直播
 import Competition from "@/views/competition/index.vue";//赛事
 import Videogame from "@/views/videogame/index.vue";//电玩
@@ -37,23 +38,14 @@ export const routes = [
     meta: {
       title: "首页",
     },
-    // beforeRouteEnter(to, from, next) {
-    //   getDeviceFingerprint().then(newImei => {
-    //     const storedImei = localStorage.getItem('browserId');
-    //     if (storedImei && newImei === storedImei) {
-    //       // 如果浏览器指纹相同，则不重新执行 getDeviceFingerprint 方法
-    //       console.log('如果浏览器指纹相同，则不重新执行');
-    //       next();
-    //     } else {
-    //       next(vm => {
-    //         console.log('如果浏览器指纹不相同，重新执行');
-    //         vm.getDeviceFingerprint().then(() => {
-    //           vm.loading.value = false;
-    //         });
-    //       });
-    //     }
-    //   });
-    // }
+  },
+  {
+    path: "/menuattention",
+    component: Menuattention,
+    meta: {
+      title: "我的关注",
+      // showLink: false,//不会显示任何链接或按钮
+    }
   },
   {
     path: "/types",
@@ -84,10 +76,6 @@ export const routes = [
     },
     // 聊吧里面四个子路由页面
     children: [
-      // {
-      //   path: '',
-      //   redirect: 'talkaboutall' // 默认重定向到 "全部聊吧"
-      // },
       {
         path: 'attention',
         component: Attention,

@@ -29,7 +29,8 @@ import { getHotTopic } from "@/api/chat";
 let list = ref([]);
 
 onMounted(() => {
-  getHotTopic({ pageNum: 1, pageSize: 20,optType:1 }).then((res) => {
+  getHotTopic({ pageNum: 1, pageSize: 20 }).then((res) => {
+    console.log(res.data);
     list.value = res.data;
   });
 });
