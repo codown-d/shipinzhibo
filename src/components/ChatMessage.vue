@@ -65,6 +65,7 @@
               accept=".png, .jpg"
               :multiple="false"
               :limit="3"
+                :headers="customHeaders"
             >
               <template #trigger>
                 <img
@@ -137,6 +138,9 @@ const checked = ref(false);
 const mentionRef = ref(null);
 const options = ref([]);
 const msg = ref("");
+const customHeaders = ref({
+  
+})
 const props = defineProps({
   actionType: {
     type: Array,
